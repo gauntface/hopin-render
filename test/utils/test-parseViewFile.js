@@ -34,7 +34,8 @@ test('parseViewFile example', async (t) => {
 {{#scripts.async}}
 {{{.}}}
 {{/scripts.async}}
-contents::view-example-1. {{> partials/partial-1.tmpl}} {{ data.hello }}`);
+contents::view-example-1. {{> partials/partial-1.tmpl}} {{ data.hello }}
+{{{content}}}`);
   t.deepEqual(parsedView.yaml, {
     partials: [
       'partials/partial-1.tmpl'

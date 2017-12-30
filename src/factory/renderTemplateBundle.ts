@@ -5,7 +5,7 @@ import { revisionBundleAssets } from '../utils/revisionBundleAssets';
 import { FlatBundle } from '../models/FlatBundle';
 import { TemplateBundle } from '../models/TemplateBundle';
 
-const renderTemplateBundle = async (templateBundle: TemplateBundle, data: object, config: {publicDir: string, revisionAssets: boolean}): Promise<string> => {
+const renderTemplateBundle = async (templateBundle: TemplateBundle, config: {publicDir: string, revisionAssets: boolean}): Promise<string> => {
   let flatBundle: FlatBundle = await flattenTemplateBundle(templateBundle);
   if (config.revisionAssets) {
     flatBundle = await revisionBundleAssets(flatBundle, config);
@@ -14,9 +14,14 @@ const renderTemplateBundle = async (templateBundle: TemplateBundle, data: object
   return <string> mustache.render(
     flatBundle.mustacheString,
     {
+      content: () => {
+        return 'Hello';
+      },
       styles: flatBundle.styles,
       scripts: flatBundle.scripts,
-      data,
+      data: {
+        // TODO: This needs to come from the bundle
+      },
     },
     flatBundle.partialMustacheStrings
   );

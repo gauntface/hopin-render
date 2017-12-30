@@ -11,6 +11,12 @@ test('renderTemplateBundle example', async (t) => {
   const viewPath = path.join(relativePath, 'view.tmpl');
   const templateBundle = await generateTemplateBundle(
     viewPath,
+    [
+      // TODO: Add Template Bundle Here
+    ],
+    {
+      hello: 'world',
+    },
     {
       partialsDir,
       publicDir,
@@ -46,5 +52,6 @@ scripts/inline-3.js
 /scripts/async-1.js
 /scripts/async-2.js
 /scripts/async-3.js
-contents::view-example-1. contents::partials/partial-1. contents::partials/partial-2. world world world`);
+contents::view-example-1. contents::partials/partial-1. contents::partials/partial-2.\u0020\u0020\u0020
+Hello`);
 });

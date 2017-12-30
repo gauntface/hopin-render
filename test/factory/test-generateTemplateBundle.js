@@ -10,6 +10,12 @@ test('generateTemplateBundle example', async (t) => {
   const viewPath = path.join(relativePath, 'view.tmpl');
   const templateBundle = await generateTemplateBundle(
     viewPath,
+    [
+      // TODO: Add Template Bundle Here
+    ],
+    {
+      hello: 'world',
+    },
     {
       partialsDir,
       publicDir,
@@ -40,7 +46,8 @@ test('generateTemplateBundle example', async (t) => {
 {{#scripts.async}}
 {{{.}}}
 {{/scripts.async}}
-contents::view-example-1. {{> partials/partial-1.tmpl}} {{ data.hello }}`);
+contents::view-example-1. {{> partials/partial-1.tmpl}} {{ data.hello }}
+{{{content}}}`);
   t.deepEqual(templateBundle.styles.raw, [
     'body { background-color: #2ecc71; }'
   ]);

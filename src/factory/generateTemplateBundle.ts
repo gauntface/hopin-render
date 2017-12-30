@@ -21,6 +21,8 @@ const createPartialBundles = async (partialPaths: Array<string>, relativePath: s
     const partialBundle = await generateTemplateBundleWithId(
       partialPath,
       partialKey,
+      [],
+      {},
       config
     );
     partialBundles.push(partialBundle);
@@ -32,6 +34,8 @@ const createPartialBundles = async (partialPaths: Array<string>, relativePath: s
 const generateTemplateBundleWithId = async (
   viewPath: string,
   id: string | null,
+  contentBundles: Array<TemplateBundle>,
+  data: object,
   config: {
     publicDir: string,
     partialsDir: string,
@@ -44,19 +48,23 @@ const generateTemplateBundleWithId = async (
   return new TemplateBundle({
     id,
     mustacheString: fileInfo.contents,
+    contentBundles,
     partialBundles,
     styles: new AssetsGroup((<any> fileInfo.yaml)['styles']),
     scripts: new AssetsGroup((<any> fileInfo.yaml)['scripts']),
+    data,
   });
 };
 
 const generateTemplateBundle = async (
   viewPath: string,
+  contentBundles: Array<TemplateBundle>,
+  data: object,
   config: {
     publicDir: string,
     partialsDir: string,
   }): Promise<TemplateBundle> => {
-  return generateTemplateBundleWithId(viewPath, null, config);
+  return generateTemplateBundleWithId(viewPath, null, contentBundles, data, config);
 };
 
 export {generateTemplateBundle};
