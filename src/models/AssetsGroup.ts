@@ -25,6 +25,13 @@ class AssetsGroup {
     this.sync = sync;
     this.async = async;
   }
+
+  merge(ag: AssetsGroup) {
+    this.raw = this.raw.concat(ag.raw);
+    this.inline = this.inline.concat(ag.inline);
+    this.sync = this.sync.concat(ag.sync);
+    this.async = this.async.concat(ag.async);
+  }
 }
 
 export {AssetsGroup};

@@ -1,4 +1,3 @@
-import { generateSubTemplate } from "./factory/generateSubTemplate";
 
 const renderSubView = ({
   relativePath,
@@ -6,20 +5,19 @@ const renderSubView = ({
   viewPath,
   data = {},
 }: {
-  relativePath: String,
-  publicPath: String,
-  viewPath: String,
+  relativePath: string,
+  publicPath: string,
+  viewPath: string,
   data?: Object,
 }) => {
   console.log(relativePath);
   console.log(publicPath);
   console.log(viewPath);
   console.log(data);
-  const subTemplate = generateSubTemplate({
-    relativePath,
+  /** const subTemplate = generateSubTemplate({
     publicPath,
     viewPath,
-  });
+  });**/
 };
 
 const renderShellView = ({
