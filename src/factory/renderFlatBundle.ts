@@ -5,11 +5,8 @@ import { revisionBundleAssets } from '../utils/revisionBundleAssets';
 import { FlatBundle } from '../models/FlatBundle';
 import { TemplateBundle } from '../models/TemplateBundle';
 
-const renderTemplateBundle = async (templateBundle: TemplateBundle, config: {publicDir: string, revisionAssets: boolean}): Promise<string> => {
-  let flatBundle: FlatBundle = await flattenTemplateBundle(templateBundle);
-  if (config.revisionAssets) {
-    flatBundle = await revisionBundleAssets(flatBundle, config);
-  }
+const renderFlatBundle = async (flatBundle: FlatBundle): Promise<string> => {
+  // let flatBundle: FlatBundle = await flattenTemplateBundle(templateBundle);
 
   return <string> mustache.render(
     flatBundle.mustacheString,
@@ -19,12 +16,10 @@ const renderTemplateBundle = async (templateBundle: TemplateBundle, config: {pub
       },
       styles: flatBundle.styles,
       scripts: flatBundle.scripts,
-      data: {
-        // TODO: This needs to come from the bundle
-      },
+      data: flatBundle.data,
     },
     flatBundle.partialMustacheStrings
   );
 };
 
-export {renderTemplateBundle};
+export {renderFlatBundle};

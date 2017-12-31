@@ -6,6 +6,7 @@ import { FlatBundle } from '../models/FlatBundle';
 
 const revisionAssets = async (assets: Array<string>, publicDir: string): Promise<Array<string>> => {
   const revisionedAssets = [];
+
   for (const asset of assets) {
     const filePath = path.join(publicDir, asset);
     try {
@@ -20,7 +21,6 @@ const revisionAssets = async (assets: Array<string>, publicDir: string): Promise
       );
       revisionedAssets.push(revisionedUrl);
     } catch (err) {
-      console.log('no access');
       revisionedAssets.push(asset);
     }
   }

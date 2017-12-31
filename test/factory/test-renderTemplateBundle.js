@@ -25,9 +25,7 @@ test('renderTemplateBundle example', async (t) => {
   const data = {
     hello: 'world',
   };
-  const render = await renderTemplateBundle(templateBundle, data, {
-    publicDir,
-  });
+  const render = await renderTemplateBundle(templateBundle, data);
   t.deepEqual(render, `body { background-color: #2ecc71; }
 body { background-color: #3498db; }
 body { background-color: #9b59b6; }

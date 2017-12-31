@@ -1,8 +1,8 @@
 class AssetsGroup {
-  public raw: Array<string>;
-  public inline: Array<string>;
-  public sync: Array<string>;
-  public async: Array<string>;
+  public raw: Set<string>;
+  public inline: Set<string>;
+  public sync: Set<string>;
+  public async: Set<string>;
 
   constructor({
     raw = [],
@@ -20,17 +20,22 @@ class AssetsGroup {
     sync: [],
     async: [],
   }) {
-    this.raw = raw;
-    this.inline = inline;
-    this.sync = sync;
-    this.async = async;
+    this.raw = new Set();
+    this.inline = new Set();
+    this.sync = new Set();
+    this.async = new Set();
+
+    raw.forEach((value) => this.raw.add(value));
+    inline.forEach((value) => this.inline.add(value));
+    sync.forEach((value) => this.sync.add(value));
+    async.forEach((value) => this.async.add(value));
   }
 
   merge(ag: AssetsGroup) {
-    this.raw = this.raw.concat(ag.raw);
-    this.inline = this.inline.concat(ag.inline);
-    this.sync = this.sync.concat(ag.sync);
-    this.async = this.async.concat(ag.async);
+    ag.raw.forEach((value) => this.raw.add(value));
+    ag.inline.forEach((value) => this.inline.add(value));
+    ag.sync.forEach((value) => this.sync.add(value));
+    ag.async.forEach((value) => this.async.add(value));
   }
 }
 

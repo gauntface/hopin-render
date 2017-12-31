@@ -12,9 +12,7 @@ test('revisionBundleAssets example', async (t) => {
   const viewPath = path.join(relativePath, 'view.tmpl');
   const templateBundle = await generateTemplateBundle(
     viewPath,
-    [
-      // TODO: Add Template Bundle Here
-    ],
+    [],
     {
       hello: 'world',
     },
