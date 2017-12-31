@@ -4,7 +4,7 @@
   "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
   "main": "build/index.js",
   "scripts": {
-    "build": "tsc --strict",
+    "build": "rm -rf ./build/ && tsc --strict",
     "test": "npm run build && ava"
   },
   "repository": {

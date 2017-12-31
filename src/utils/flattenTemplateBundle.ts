@@ -48,8 +48,6 @@ const traverseTree = async (rootBundle: TemplateBundle, cumulativeDetails: {styl
     flatChild.scripts.async.forEach((value) => {
       cumulativeDetails.scripts.async.add(value);
     });
-
-    traverseTree(childBundle, cumulativeDetails);
   }
 };
 

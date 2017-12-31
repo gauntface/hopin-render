@@ -6,20 +6,18 @@ import { FlatBundle } from '../models/FlatBundle';
 import { TemplateBundle } from '../models/TemplateBundle';
 
 const renderFlatBundle = async (flatBundle: FlatBundle): Promise<string> => {
-  // let flatBundle: FlatBundle = await flattenTemplateBundle(templateBundle);
-
   return <string> mustache.render(
     flatBundle.mustacheString,
     {
       content: () => {
-        return 'Hello';
+        return flatBundle.contentStrings.join('\n');
       },
       styles: flatBundle.styles,
       scripts: flatBundle.scripts,
       data: flatBundle.data,
     },
     flatBundle.partialMustacheStrings
-  );
+  ).trim();
 };
 
 export {renderFlatBundle};

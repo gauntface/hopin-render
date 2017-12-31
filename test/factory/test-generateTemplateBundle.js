@@ -8,7 +8,7 @@ test('generateTemplateBundle example', async (t) => {
   const publicDir = path.join(relativePath, 'public');
   const partialsDir = path.join(relativePath, 'partials');
   const contentBundle = await generateTemplateBundle(
-    path.join(relativePath, 'content.tmpl'),
+    path.join(relativePath, 'content-1.tmpl'),
     [],
     {
       hello: 'content',
