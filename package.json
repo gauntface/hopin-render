@@ -1,6 +1,6 @@
 {
   "name": "hopin-render",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
   "main": "build/index.js",
   "scripts": {
