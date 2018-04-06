@@ -11,8 +11,7 @@ test.afterEach.always((t) => {
 });
 
 test('should compile empty string', async (t) => {
-  const template = compile('');
-
+  const template = await compile('');
   const result = await template.render();
   t.deepEqual(result, '');
 });

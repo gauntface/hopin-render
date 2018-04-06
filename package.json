@@ -6,9 +6,8 @@
     "lint": "tslint 'src/**/*'",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "npm run build && npm run ava && npm run lint",
-    "typescript:modules": "tsc -p ./tsconfigs/modules.json",
-    "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json",
-    "typescript:test": "tsc -p ./tsconfigs/test.json",
+    "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json --declaration",
+    "typescript:test": "tsc -p ./tsconfigs/test.json --declaration",
     "version": "echo 'TODO: ./build-docs && git add docs'"
   },
   "nyc": {
@@ -28,12 +27,12 @@
     "ava": "0.25.0",
     "coveralls": "3.0.0",
     "express": "4.16.2",
-    "fs-extra": "5.0.0",
+    "fs-extra": "^5.0.0",
     "glob": "7.1.2",
     "gulp": "4.0.0",
     "gulp-rename": "1.2.2",
     "gulp-sourcemaps": "2.6.4",
-    "gulp-typescript": "4.0.1",
+    "gulp-typescript": "^4.0.1",
     "nyc": "11.4.1",
     "puppeteer": "1.1.1",
     "rollup": "0.56.5",
@@ -43,7 +42,7 @@
     "sinon": "4.4.2",
     "tslint": "5.9.1",
     "typedoc": "0.11.1",
-    "typescript": "2.7.2",
+    "typescript": "^2.7.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
@@ -70,5 +69,6 @@
   "author": "gauntface",
   "license": "Apache-2.0",
   "main": "./dist/commonjs/node/index.js",
+  "typings": "./dist/commonjs/node/index.d.ts",
   "version": "1.0.1"
 }

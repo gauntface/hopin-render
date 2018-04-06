@@ -1,16 +1,26 @@
 import * as path from 'path';
+import * as fs from 'fs-extra';
 
 import {logger} from "./utils/logger";
-import { Template } from "./Template";
+import { generateTemplate, Template } from "./Template";
 
-export function compile(template: string): Template {
-  return new Template();
+export function compile(template: string): Promise<Template> {
+  return generateTemplate(template);
 }
 
-export function compileFile(filePath: string) {
+export async function compileFile(filePath: string): Promise<Template> {
+  let fullPath = filePath;
   if (!path.isAbsolute(filePath)) {
-    const fullPath = path.resolve(filePath);
-    logger.warn(`Resolving full path of template file: ${fullPath}`);
+    fullPath = path.resolve(filePath);
   }
-  return new Template();
+
+  try {
+    await fs.access(fullPath);
+  } catch(err) {
+    logger.error(`Unable to access ${filePath}`);
+    throw err;
+  }
+  
+  const fileContents = await fs.readFile(fullPath);
+  return generateTemplate(fileContents.toString());
 }

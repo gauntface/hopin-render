@@ -1,7 +1,5 @@
-// tslint:disable
+import {factory, Logger} from '@hopin/logger';
 
-import {factory} from '@hopin/logger';
-
-export const logger = factory.getLogger('example-project', {
+export const logger: Logger = factory.getLogger('example-project', {
   prefix: 'hopin-render',
 });
