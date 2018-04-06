@@ -20,7 +20,7 @@ export async function compileFile(filePath: string): Promise<Template> {
     logger.error(`Unable to access ${filePath}`);
     throw err;
   }
-  
+
   const fileContents = await fs.readFile(fullPath);
-  return generateTemplate(fileContents.toString());
+  return compile(fileContents.toString());
 }

@@ -6,8 +6,8 @@
     "lint": "tslint 'src/**/*'",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "npm run build && npm run ava && npm run lint",
-    "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json --declaration",
-    "typescript:test": "tsc -p ./tsconfigs/test.json --declaration",
+    "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json --declaration --skipLibCheck",
+    "typescript:test": "tsc -p ./tsconfigs/test.json --declaration --skipLibCheck",
     "version": "echo 'TODO: ./build-docs && git add docs'"
   },
   "nyc": {
@@ -47,7 +47,9 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "@hopin/logger": "0.0.3"
+    "@hopin/logger": "0.0.3",
+    "gray-matter": "^4.0.1",
+    "handlebars": "^4.0.11"
   },
   "keywords": [
     "hopin",
@@ -64,7 +66,7 @@
   "bugs": {
     "url": "https://github.com/gauntface/hopin-logger/issues"
   },
-  "name": "hopin-render",
+  "name": "@hopin/render",
   "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
   "author": "gauntface",
   "license": "Apache-2.0",

@@ -10,9 +10,10 @@
     "rootDir": "../"
   },
   "include": [
-    "../test/**/*"
+    "../test/**/*.ts"
   ],
   "exclude": [
-    "../**/*.spec.ts"
+    "../**/*.spec.ts",
+    "node_modules"
   ]
 }
