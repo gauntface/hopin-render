@@ -22,5 +22,5 @@ export async function compileFile(filePath: string): Promise<Template> {
   }
 
   const fileContents = await fs.readFile(fullPath);
-  return compile(fileContents.toString());
+  return generateTemplate(fileContents.toString(), path.dirname(fullPath));
 }

@@ -55,3 +55,12 @@ test('should compile basic yaml file and print yaml data', async (t) => {
   t.deepEqual(result, `I am an example
 `);
 });
+
+test('should compile basic partials file', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/basic-partials.tmpl'));
+  const result = await template.render();
+  t.deepEqual(result, `hello from partial import
+
+`);
+});
+
