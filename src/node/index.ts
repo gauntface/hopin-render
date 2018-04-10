@@ -4,8 +4,8 @@ import * as fs from 'fs-extra';
 import {logger} from "./utils/logger";
 import { generateTemplate, Template } from "./Template";
 
-export function compile(template: string): Promise<Template> {
-  return generateTemplate(template);
+export function compile(template: string, relativePath?: string): Promise<Template> {
+  return generateTemplate(template, relativePath);
 }
 
 export async function compileFile(filePath: string): Promise<Template> {
@@ -17,7 +17,7 @@ export async function compileFile(filePath: string): Promise<Template> {
   try {
     await fs.access(fullPath);
   } catch(err) {
-    logger.error(`Unable to access ${filePath}`);
+    logger.error(`Unable to access '${filePath}'`);
     throw err;
   }
 

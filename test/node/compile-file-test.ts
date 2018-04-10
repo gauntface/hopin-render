@@ -2,6 +2,7 @@ import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
 import {compileFile, compile} from '../../src/node/index';
+import { logger } from '../../src/node/utils/logger';
 
 test.beforeEach((t) => {
   t.context.sandbox = sinon.sandbox.create();
@@ -11,8 +12,11 @@ test.afterEach.always((t) => {
   t.context.sandbox.restore();
 });
 
-test('should throw for a non-existant file', async (t) => {
+test.serial('should throw for a non-existant file', async (t) => {
+  const loggerStub = t.context.sandbox.stub(logger, 'error');
   await t.throws(compileFile('./test/static/non-existant-file.tmpl'));
+  t.deepEqual(loggerStub.callCount, 1, 'logger.error call count');
+  t.deepEqual(loggerStub.args[0][0], 'Unable to access \'./test/static/non-existant-file.tmpl\'')
 });
 
 test('should compile empty file with relative path', async (t) => {
@@ -60,7 +64,6 @@ test('should compile basic partials file', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-partials.tmpl'));
   const result = await template.render();
   t.deepEqual(result, `hello from partial import
-
 `);
 });
 
