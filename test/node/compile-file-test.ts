@@ -67,3 +67,14 @@ test('should compile basic partials file', async (t) => {
 `);
 });
 
+test('should compile basic file with styles', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/basic-styles.tmpl'));
+  const result = await template.render();
+  t.deepEqual(result, `
+/* Inline CSS */
+
+
+
+`);
+});
+

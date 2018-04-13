@@ -1,0 +1,21 @@
+---
+styles:
+  inline:
+    - ./inline.css
+  sync:
+    - ./sync.css
+  async:
+    - ./async.css
+---
+
+{{#hopin.styles.inline}}
+{{{.}}}
+{{/hopin.styles.inline}}
+
+{{#hopin.styles.sync}}
+{{{.}}}
+{{/hopin.styles.sync}}
+
+{{#hopin.styles.async}}
+{{{.}}}
+{{/hopin.styles.async}}

@@ -54,8 +54,7 @@ hello:
   t.deepEqual(result, 'I am an example');
 });
 
-test.serial('should warn if partials is not an array', async (t) => {
-  const loggerStub = t.context.sandbox.stub(logger, 'warn');
+test('should throw if partials is not an array', async (t) => {
   const template = await compile(`---
 partials:
   hello:
@@ -63,14 +62,10 @@ partials:
       - "I am an example"
 ---
 {{yaml.partials.hello.world}}`);
-  const result = await template.render();
-  t.deepEqual(result, 'I am an example');
-  t.deepEqual(loggerStub.callCount, 1, 'logger.warn call count');
-  t.deepEqual(loggerStub.args[0][0], 'The \'partials\' yaml field should be a list of strings but found \'object\' instead.');
+  await t.throws(template.render());
 });
 
-test.serial('should warn if a partials entry is not a string', async (t) => {
-  const loggerStub = t.context.sandbox.stub(logger, 'warn');
+test('should throw if a partials entry is not a string', async (t) => {
   const template = await compile(`---
 partials:
   - 123
@@ -80,15 +75,10 @@ partials:
         - "I am an example"
 ---
 {{yaml.partials.[2].hello.world}}`);
-  const result = await template.render();
-  t.deepEqual(result, 'I am an example');
-  t.deepEqual(loggerStub.callCount, 1, 'logger.warn call count');
-  t.deepEqual(loggerStub.args[0][0], `Found partials that were not strings:
-- 123
-- {"hello":{"world":["I am an example"]}}`);
+  await t.throws(template.render());
 });
 
-test('should warn if a partials entry is not a string', async (t) => {
+test('should work if partial is a string', async (t) => {
   const partialPath = path.join(__dirname, '..', 'static', 'partial-import.tmpl');
   const template = await compile(`---
 partials:
@@ -98,4 +88,31 @@ partials:
   const result = await template.render();
   t.deepEqual(result, `hello from partial import
 `);
+});
+
+test('should work if inline style file is absolute', async (t) => {
+  const inlinePath = path.join(__dirname, '..', 'static', 'inline.css');
+  const template = await compile(`---
+styles:
+  inline:
+    - ${inlinePath}
+---
+{{#hopin.styles.inline}}
+{{{.}}}
+{{/hopin.styles.inline}}`);
+  const result = await template.render();
+  t.deepEqual(result, `/* Inline CSS */
+
+`);
+});
+
+test('should handle empty styles', async (t) => {
+  const template = await compile(`---
+styles:
+  other:
+    - ./inline.css
+---
+Hello`);
+  const result = await template.render();
+  t.deepEqual(result, `Hello`);
 });
