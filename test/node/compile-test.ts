@@ -1,6 +1,7 @@
 import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
+import {EOL} from 'os';
 import {compile} from '../../src/node/index';
 import {logger} from '../../src/node/utils/logger';
 
@@ -86,8 +87,7 @@ partials:
 ---
 {{> "${partialPath}"}}`);
   const result = await template.render();
-  t.deepEqual(result, `hello from partial import
-`);
+  t.deepEqual(result, `hello from partial import${EOL}`);
 });
 
 test('should work if inline style file is absolute', async (t) => {
@@ -101,9 +101,8 @@ styles:
 {{{.}}}
 {{/hopin.styles.inline}}`);
   const result = await template.render();
-  t.deepEqual(result, `/* Inline CSS */
-
-`);
+  // Seems Mustache is using new line characters regardless on platform here.
+  t.deepEqual(result, `/* Inline CSS */${EOL}\n`);
 });
 
 test('should handle empty styles', async (t) => {

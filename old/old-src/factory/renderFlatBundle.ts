@@ -1,4 +1,5 @@
 import * as mustache  from 'mustache';
+import {EOL} from 'os';
 
 import { flattenTemplateBundle } from '../utils/flattenTemplateBundle';
 import { revisionBundleAssets } from '../utils/revisionBundleAssets';
@@ -10,7 +11,7 @@ const renderFlatBundle = async (flatBundle: FlatBundle): Promise<string> => {
     flatBundle.mustacheString,
     {
       content: () => {
-        return flatBundle.contentStrings.join('\n');
+        return flatBundle.contentStrings.join(EOL);
       },
       styles: flatBundle.styles,
       scripts: flatBundle.scripts,

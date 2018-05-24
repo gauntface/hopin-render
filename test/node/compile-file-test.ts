@@ -1,6 +1,7 @@
 import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
+import {EOL} from 'os';
 import {compileFile, compile} from '../../src/node/index';
 import { logger } from '../../src/node/utils/logger';
 
@@ -34,8 +35,7 @@ test('should compile empty file with absolute path', async (t) => {
 test('should compile basic file with no data', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-data.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `Hello   Fin.
-`);
+  t.deepEqual(result, `Hello   Fin.${EOL}`);
 });
 
 test('should compile basic file with data', async (t) => {
@@ -43,8 +43,7 @@ test('should compile basic file with data', async (t) => {
   const result = await template.render({
     name: 'World',
   });
-  t.deepEqual(result, `Hello World  Fin.
-`);
+  t.deepEqual(result, `Hello World  Fin.${EOL}`);
 });
 
 test('should compile basic yaml file', async (t) => {
@@ -56,25 +55,18 @@ test('should compile basic yaml file', async (t) => {
 test('should compile basic yaml file and print yaml data', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-yaml-print.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `I am an example
-`);
+  t.deepEqual(result, `I am an example${EOL}`);
 });
 
 test('should compile basic partials file', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-partials.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `hello from partial import
-`);
+  t.deepEqual(result, `hello from partial import${EOL}`);
 });
 
 test('should compile basic file with styles', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-styles.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `
-/* Inline CSS */
-
-
-
-`);
+  t.deepEqual(result, `${EOL}/* Inline CSS */${EOL}${EOL}${EOL}${EOL}`);
 });
 

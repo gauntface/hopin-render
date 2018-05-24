@@ -1,4 +1,5 @@
 import * as path from 'path';
+import {EOL} from 'os';
 
 import {logger} from '../utils/logger';
 
@@ -29,7 +30,7 @@ export async function getAbsPathsFromYaml(files: string[], relativePath: string,
     logger.warn(`Found partials that were not strings:
 ${problemPaths
 .map((problemPath) => `- ${JSON.stringify(problemPath)}`)
-.join('\n')}`);
+.join(EOL)}`);
   }
 
   return absPaths;
