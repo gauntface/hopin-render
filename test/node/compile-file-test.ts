@@ -6,7 +6,7 @@ import {compileFile, compile} from '../../src/node/index';
 import { logger } from '../../src/node/utils/logger';
 
 test.beforeEach((t) => {
-  t.context.sandbox = sinon.sandbox.create();
+  t.context.sandbox = sinon.createSandbox();
 });
 
 test.afterEach.always((t) => {
