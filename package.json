@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "ava": "nyc ava ./build/test/{node,integration}/**/*.js",
+    "ava": "npm run build && nyc ava ./build/test/{node,integration}/**/*.js",
     "build": "gulp build",
     "docs": "typedoc ./src/**/*.ts --out ./docs/ --mode file --excludePrivate --excludeProtected --module umd --ignoreCompilerErrors",
     "lint": "tslint 'src/**/*'",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
-    "test": "npm run build && npm run ava && npm run lint",
+    "test": "npm run ava && npm run lint",
     "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json --declaration --skipLibCheck",
     "typescript:test": "tsc -p ./tsconfigs/test.json --declaration --skipLibCheck",
     "version": "echo 'TODO: ./build-docs && git add docs'"

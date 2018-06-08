@@ -67,6 +67,31 @@ test('should compile basic partials file', async (t) => {
 test('should compile basic file with styles', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-styles.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `${EOL}/* Inline CSS */${EOL}${EOL}${EOL}${EOL}`);
+  t.deepEqual(result, `/* Inline CSS */${EOL}${EOL}./sync.css${EOL}/sync.css${EOL}./async.css${EOL}/async.css${EOL}`);
 });
 
+test('should compile basic file with duplicate styles', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/duplicate-styles.tmpl'));
+  const result = await template.render();
+  t.deepEqual(result, `/* Inline CSS */${EOL}\n./sync.css\n/sync.css\n./async.css\n/async.css\n`);
+});
+
+test('should compile basic file with scripts', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/basic-scripts.tmpl'));
+  const result = await template.render();
+  t.deepEqual(result, `/* Inline JS */\n\n./sync.js\n/sync.js\n./async.js\n/async.js\n`);
+});
+
+test('should compile basic file with duplicate scripts', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/duplicate-scripts.tmpl'));
+  const result = await template.render();
+  t.deepEqual(result, `/* Inline JS */\n\n./sync.js\n/sync.js\n./async.js\n/async.js\n`);
+});
+
+test('should compile complete file with partials, merging styles and scripts', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/complete-partials.tmpl'));
+  const result = await template.render();
+  // TODO This test doesn't currently test for partial styles and scripts being added to final compilation
+  // Implement next.
+  t.deepEqual(result, `hello from partial import\nhello from nested partial import\n/* Inline CSS */${EOL}\n/* Inline CSS-3 */\n\n/* Inline CSS-2 */\n\n/* Inline CSS-4 */\n\n/sync.css\n/sync-3.css\n/sync-2.css\n/sync-4.css\n/async.css\n/async-3.css\n/async-2.css\n/async-4.css\n\n/* Inline JS */\n\n/* Inline JS-3 */\n\n/* Inline JS-2 */\n\n/* Inline JS-4 */\n\n/sync.js\n/sync-3.js\n/sync-2.js\n/sync-4.js\n/async.js\n/async-3.js\n/async-2.js\n/async-4.js\n`);
+});
