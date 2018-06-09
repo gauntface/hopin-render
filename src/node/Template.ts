@@ -6,6 +6,19 @@ import * as path from 'path';
 import { compileFile } from '.';
 import {logger} from "./utils/logger";
 
+interface RenderOptions {
+  styles?: {
+    inline?: string[];
+    sync?: string[];
+    async?: string[];
+  };
+  scripts?: {
+    inline?: string[];
+    sync?: string[];
+    async?: string[];
+  };
+}
+
 interface AssetGroup {
   inline: Set<string>;
   sync: Set<string>;
@@ -154,7 +167,7 @@ export class Template {
     return new Set(assets);
   }
 
-  async render(data?: object) {
+  async render(data?: object, opts?: RenderOptions) {
     const handlebarsInstance = handlebars.create();
 
     const compilation = await this.compile();
@@ -163,6 +176,44 @@ export class Template {
       const template = compilation.partials[partialName];
       const renderedPartial = await template.render(data);
       handlebarsInstance.registerPartial(partialName, renderedPartial);
+    }
+
+    if (opts) {
+      if (opts.styles) {
+        if (opts.styles.inline) {
+          for (const style of opts.styles.inline) {
+            compilation.styles.inline.add(style);
+          }
+        }
+        if (opts.styles.sync) {
+          for (const style of opts.styles.sync) {
+            compilation.styles.sync.add(style);
+          }
+        }
+        if (opts.styles.async) {
+          for (const style of opts.styles.async) {
+            compilation.styles.async.add(style);
+          }
+        }
+      }
+
+      if (opts.scripts) {
+        if (opts.scripts.inline) {
+          for (const script of opts.scripts.inline) {
+            compilation.scripts.inline.add(script);
+          }
+        }
+        if (opts.scripts.sync) {
+          for (const script of opts.scripts.sync) {
+            compilation.scripts.sync.add(script);
+          }
+        }
+        if (opts.scripts.async) {
+          for (const script of opts.scripts.async) {
+            compilation.scripts.async.add(script);
+          }
+        }
+      }
     }
 
     const handlebarsTemplate = handlebarsInstance.compile(this.template);
