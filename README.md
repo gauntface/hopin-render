@@ -44,10 +44,10 @@ partials:
 <html>
 <head>
 {{#hopin.styles.inline}}
-{{{.}}}
+<style>{{{.}}}</style>
 {{/hopin.styles.inline}}
 {{#hopin.styles.sync}}
-<style src="{{{.}}}"></style>
+<link rel="stylesheet" href="{{{.}}}">
 {{/hopin.styles.sync}}
 </head>
 
@@ -99,3 +99,8 @@ const options = {
 const result = await hopinTemplate.render(data, options);
 console.log(result);
 ```
+
+## TODO
+
+- Add helper to handle async loading of CSS
+- Add helper to handle style and script HTML
