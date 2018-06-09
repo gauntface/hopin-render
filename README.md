@@ -15,7 +15,7 @@ This allows CSS and JS to be loaded in a "best practice-y" way.
 </p>
 
 <p align="center">
-<img a;t="Screenshot of hopin-logger demos in Node and Browser" src="https://raw.githubusercontent.com/gauntface/hopin-logger/master/demo/hopin-logger-screenshots.png" />
+<img alt="Steven Universe Nerd" src="https://media.giphy.com/media/ioeYm4g2f7cXe/giphy.gif" />
 </p>
 
 ## Usage in Node
