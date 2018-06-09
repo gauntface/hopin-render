@@ -2,8 +2,8 @@ import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
 import {EOL} from 'os';
-import {compileFile, compile} from '../../src/node/index';
-import { logger } from '../../src/node/utils/logger';
+import {compileFile, compile} from '../../src/index';
+import { logger } from '../../src/utils/logger';
 
 test.beforeEach((t) => {
   t.context.sandbox = sinon.createSandbox();
