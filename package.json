@@ -1,27 +1,71 @@
 {
-  "name": "hopin-render",
-  "version": "1.0.1",
-  "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
-  "main": "build/index.js",
   "scripts": {
-    "build": "rm -rf ./build/ && tsc --strict",
-    "test": "npm run build && ava"
+    "ava": "npm run build && nyc ava ./build/test/{node,integration}/**/*.js",
+    "build": "gulp build",
+    "docs": "typedoc ./src/**/*.ts --out ./docs/ --mode file --excludePrivate --excludeProtected --module umd --ignoreCompilerErrors",
+    "lint": "tslint 'src/**/*'",
+    "report-coverage": "nyc report --reporter=text-lcov | coveralls",
+    "test": "npm run ava && npm run lint",
+    "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json --declaration --skipLibCheck",
+    "typescript:test": "tsc -p ./tsconfigs/test.json --declaration --skipLibCheck",
+    "version": "echo 'TODO: ./build-docs && git add docs'"
   },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "build/test/**/*"
+    ]
+  },
+  "devDependencies": {
+    "@types/fs-extra": "5.0.3",
+    "@types/sinon": "5.0.1",
+    "ava": "0.25.0",
+    "coveralls": "3.0.1",
+    "fs-extra": "^6.0.1",
+    "glob": "7.1.2",
+    "gulp": "4.0.0",
+    "gulp-sourcemaps": "2.6.4",
+    "gulp-typescript": "^4.0.1",
+    "nyc": "12.0.2",
+    "rollup": "0.60.1",
+    "rollup-plugin-sourcemaps": "0.4.2",
+    "rollup-plugin-terser": "^1.0.1",
+    "rollup-stream": "1.24.1",
+    "sinon": "5.1.0",
+    "tslint": "5.10.0",
+    "typedoc": "0.11.1",
+    "typescript": "^2.9.1",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "@hopin/logger": "0.0.3",
+    "gray-matter": "^4.0.1",
+    "handlebars": "^4.0.11"
+  },
+  "keywords": [
+    "hopin",
+    "render"
+  ],
+  "files": [
+    "dist/**/*"
+  ],
+  "homepage": "https://github.com/gauntface/hopin-render#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gauntface/hopin-render.git"
   },
-  "license": "Apache-2.0",
-  "homepage": "https://github.com/gauntface/hopin-render#readme",
-  "devDependencies": {
-    "@types/fs-extra": "^5.0.0",
-    "@types/mustache": "^0.8.30",
-    "ava": "^0.24.0",
-    "typescript": "^2.6.2"
+  "bugs": {
+    "url": "https://github.com/gauntface/hopin-logger/issues"
   },
-  "dependencies": {
-    "fs-extra": "^5.0.0",
-    "gray-matter": "^3.1.1",
-    "mustache": "^2.3.0"
-  }
+  "name": "@hopin/render",
+  "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
+  "author": "gauntface",
+  "license": "Apache-2.0",
+  "main": "./dist/commonjs/index.js",
+  "typings": "./dist/commonjs/index.d.ts",
+  "version": "1.0.1"
 }

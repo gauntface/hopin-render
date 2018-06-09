@@ -1,0 +1,20 @@
+---
+scripts:
+  inline:
+    - ./inline.js
+  sync:
+    - ./sync.js
+    - /sync.js
+  async:
+    - ./async.js
+    - /async.js
+---
+{{#hopin.scripts.inline}}
+{{{.}}}
+{{/hopin.scripts.inline}}
+{{#hopin.scripts.sync}}
+{{{.}}}
+{{/hopin.scripts.sync}}
+{{#hopin.scripts.async}}
+{{{.}}}
+{{/hopin.scripts.async}}

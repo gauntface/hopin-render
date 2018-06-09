@@ -1,0 +1,26 @@
+---
+styles:
+  inline:
+    - ./inline.css
+    - ./inline-2.css
+  sync:
+    - /sync.css
+    - /sync-2.css
+  async:
+    - /async.css
+    - /async-2.css
+scripts:
+  inline:
+    - ./inline.js
+    - ./inline-2.js
+  sync:
+    - /sync.js
+    - /sync-2.js
+  async:
+    - /async.js
+    - /async-2.js
+partials:
+  - ./partial-nested-import.tmpl
+---
+hello from partial import
+{{> "./partial-nested-import.tmpl"}}

@@ -1,62 +1,26 @@
-import { generateTemplateBundle } from "./factory/generateTemplateBundle";
-import { TemplateBundle } from "./models/TemplateBundle";
-import { flattenTemplateBundle } from "./utils/flattenTemplateBundle";
-import { retrieveInlineAssets } from './utils/retrieveInlineAssets';
-import { revisionBundleAssets } from "./utils/revisionBundleAssets";
-import { renderFlatBundle } from "./factory/renderFlatBundle";
+import * as path from 'path';
+import * as fs from 'fs-extra';
 
-const parseViewsToBundles = async (views: Array<object>, config: {
-  partialsDir: string,
-  publicDir: string,
-  revisionAssets?: boolean,
-}): Promise<Array<TemplateBundle>> => {
-  let templateBundles = [];
+import {logger} from "./utils/logger";
+import { generateTemplate, Template } from "./Template";
 
-  for (const viewDetails of views) {
-    let contentBundles: Array<TemplateBundle> = [];
-    if ((<any> viewDetails)['views']) {
-      contentBundles = await parseViewsToBundles((<any> viewDetails)['views'], config);
-    }
+export function compile(template: string, relativePath?: string): Promise<Template> {
+  return generateTemplate(template, relativePath);
+}
 
-    const templateBundle = await generateTemplateBundle((<any> viewDetails)['viewPath'], contentBundles, (<any> viewDetails)['data'], config);
-    templateBundles.push(templateBundle);
+export async function compileFile(filePath: string): Promise<Template> {
+  let fullPath = filePath;
+  if (!path.isAbsolute(filePath)) {
+    fullPath = path.resolve(filePath);
   }
 
-  return templateBundles;
-};
+  try {
+    await fs.access(fullPath);
+  } catch(err) {
+    logger.error(`Unable to access '${filePath}'`);
+    throw err;
+  }
 
-const renderShell = async ({
-  shellPath,
-  data = {},
-  views = [],
-  config,
-}: {
-  shellPath: string,
-  data?: object,
-  views?: Array<object>,
-  config : {
-    partialsDir: string,
-    publicDir: string,
-    revisionAssets?: boolean,
-  },
-}): Promise<string> => {
-  // Parse views into content bundles
-  const contentBundles = await parseViewsToBundles(views, config);
-
-  // Create template bundle
-  const templateBundle = await generateTemplateBundle(shellPath, contentBundles, data, config);
-
-  // Flatten template Bundle
-  let flatBundle = await flattenTemplateBundle(templateBundle);
-
-  // Retrieve Inline Assets
-  flatBundle = await retrieveInlineAssets(flatBundle, config);
-
-  // Revision Other Assets
-  flatBundle = await revisionBundleAssets(flatBundle, config);
-
-  // Render Shell
-  return renderFlatBundle(flatBundle);
-};
-
-export {renderShell};
+  const fileContents = await fs.readFile(fullPath);
+  return generateTemplate(fileContents.toString(), path.dirname(fullPath));
+}
