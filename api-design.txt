@@ -1,7 +1,0 @@
-compile(template: string): Promise<Template>
-
-Template.addChildTemplate(tmpl: Template) Template
-Template.shouldRevisionAssets(revision: boolean) Template
-Template.shouldParseMarkdown(markdown: boolean) MarkdownTemplate
-
-Template.render(data: {}): Promise<string>
