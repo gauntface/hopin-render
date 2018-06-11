@@ -122,9 +122,8 @@ test('should compile complete file with partials and extras, merging styles and 
 
 test('should compile complete file using helpers for scripts and styles', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers.tmpl'));
-  const expectedResult = `hello from partial import${EOL}hello from nested partial import${EOL}headAssets: ${EOL}bodyAssets: ${EOL}`;
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n\n`;
   
   let result = await template.render();
-  console.log(result);
   t.deepEqual(result, expectedResult);
 });

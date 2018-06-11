@@ -169,17 +169,6 @@ export class Template {
 
   async render(data?: object, opts?: RenderOptions) {
     const handlebarsInstance = handlebars.create();
-    handlebarsInstance.registerHelper('hopin.headAssets', () => {
-      console.log('WOOOOHHHOOOOOOOO');
-      const text = Handlebars.Utils.escapeExpression('Just a test');
-    
-      var result = '<a href="' + 'no-url' + '">' + text + '</a>';
-    
-      return new Handlebars.SafeString(result);
-    });
-    handlebarsInstance.registerHelper('hopin.bodyAssets', () => {
-      return '<a href="' + 'just-a-test' + '">' + 'hello-world' + '</a>';
-    });
 
     const compilation = await this.compile();
 
@@ -226,6 +215,21 @@ export class Template {
         }
       }
     }
+
+    handlebarsInstance.registerHelper('hopin_headAssets', () => {
+      let result = '';
+      for (const inlineStyle of compilation.styles.inline) {
+        result += `<style>${handlebars.escapeExpression(inlineStyle.trim())}</style>\n`;
+      }
+      for (const syncStyle of compilation.styles.sync) {
+        result += `<link rel="stylesheet" type="text/css" href="${handlebars.escapeExpression(syncStyle)}" />\n`;
+      }
+      return new handlebars.SafeString(result);
+    });
+
+    handlebarsInstance.registerHelper('hopin_bodyAssets', () => {
+      return '';
+    });
 
     const handlebarsTemplate = handlebarsInstance.compile(this.template);
     return handlebarsTemplate({
