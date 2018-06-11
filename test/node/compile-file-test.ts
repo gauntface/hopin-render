@@ -2,8 +2,8 @@ import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
 import {EOL} from 'os';
-import {compileFile, compile} from '../../src/index';
-import { logger } from '../../src/utils/logger';
+import {compileFile, compile} from '../../src/node/index';
+import { logger } from '../../src/node/utils/logger';
 
 test.beforeEach((t) => {
   t.context.sandbox = sinon.createSandbox();
@@ -73,24 +73,24 @@ test('should compile basic file with styles', async (t) => {
 test('should compile basic file with duplicate styles', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/duplicate-styles.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `/* Inline CSS */${EOL}\n./sync.css\n/sync.css\n./async.css\n/async.css\n`);
+  t.deepEqual(result, `/* Inline CSS */${EOL}${EOL}./sync.css${EOL}/sync.css${EOL}./async.css${EOL}/async.css${EOL}`);
 });
 
 test('should compile basic file with scripts', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-scripts.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `/* Inline JS */\n\n./sync.js\n/sync.js\n./async.js\n/async.js\n`);
+  t.deepEqual(result, `/* Inline JS */${EOL}${EOL}./sync.js${EOL}/sync.js${EOL}./async.js${EOL}/async.js${EOL}`);
 });
 
 test('should compile basic file with duplicate scripts', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/duplicate-scripts.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `/* Inline JS */\n\n./sync.js\n/sync.js\n./async.js\n/async.js\n`);
+  t.deepEqual(result, `/* Inline JS */${EOL}${EOL}./sync.js${EOL}/sync.js${EOL}./async.js${EOL}/async.js${EOL}`);
 });
 
 test('should compile complete file with partials, merging styles and scripts', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/complete-partials.tmpl'));
-  const expectedResult = `hello from partial import\nhello from nested partial import\n/* Inline CSS */${EOL}\n/* Inline CSS-3 */\n\n/* Inline CSS-2 */\n\n/* Inline CSS-4 */\n\n/sync.css\n/sync-3.css\n/sync-2.css\n/sync-4.css\n/async.css\n/async-3.css\n/async-2.css\n/async-4.css\n\n/* Inline JS */\n\n/* Inline JS-3 */\n\n/* Inline JS-2 */\n\n/* Inline JS-4 */\n\n/sync.js\n/sync-3.js\n/sync-2.js\n/sync-4.js\n/async.js\n/async-3.js\n/async-2.js\n/async-4.js\n`;
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import${EOL}/* Inline CSS */${EOL}${EOL}/* Inline CSS-3 */${EOL}${EOL}/* Inline CSS-2 */${EOL}${EOL}/* Inline CSS-4 */${EOL}${EOL}/sync.css${EOL}/sync-3.css${EOL}/sync-2.css${EOL}/sync-4.css${EOL}/async.css${EOL}/async-3.css${EOL}/async-2.css${EOL}/async-4.css${EOL}${EOL}/* Inline JS */${EOL}${EOL}/* Inline JS-3 */${EOL}${EOL}/* Inline JS-2 */${EOL}${EOL}/* Inline JS-4 */${EOL}${EOL}/sync.js${EOL}/sync-3.js${EOL}/sync-2.js${EOL}/sync-4.js${EOL}/async.js${EOL}/async-3.js${EOL}/async-2.js${EOL}/async-4.js${EOL}`;
   
   let result = await template.render();
   t.deepEqual(result, expectedResult);
@@ -117,5 +117,14 @@ test('should compile complete file with partials and extras, merging styles and 
       async: ['/async-5.js'],
     }
   });
-  t.deepEqual(result, `hello from partial import\nhello from nested partial import\n/* Inline CSS */${EOL}\n/* Inline CSS-3 */\n\n/* Inline CSS-2 */\n\n/* Inline CSS-4 */\n\n/* Inline CSS-5 */\n/sync.css\n/sync-3.css\n/sync-2.css\n/sync-4.css\n/sync-5.css\n/async.css\n/async-3.css\n/async-2.css\n/async-4.css\n/async-5.css\n\n/* Inline JS */\n\n/* Inline JS-3 */\n\n/* Inline JS-2 */\n\n/* Inline JS-4 */\n\n/* Inline JS-5 */\n/sync.js\n/sync-3.js\n/sync-2.js\n/sync-4.js\n/sync-5.js\n/async.js\n/async-3.js\n/async-2.js\n/async-4.js\n/async-5.js\n`);
+  t.deepEqual(result, `hello from partial import${EOL}hello from nested partial import${EOL}/* Inline CSS */${EOL}${EOL}/* Inline CSS-3 */${EOL}${EOL}/* Inline CSS-2 */${EOL}${EOL}/* Inline CSS-4 */${EOL}${EOL}/* Inline CSS-5 */${EOL}/sync.css${EOL}/sync-3.css${EOL}/sync-2.css${EOL}/sync-4.css${EOL}/sync-5.css${EOL}/async.css${EOL}/async-3.css${EOL}/async-2.css${EOL}/async-4.css${EOL}/async-5.css${EOL}${EOL}/* Inline JS */${EOL}${EOL}/* Inline JS-3 */${EOL}${EOL}/* Inline JS-2 */${EOL}${EOL}/* Inline JS-4 */${EOL}${EOL}/* Inline JS-5 */${EOL}/sync.js${EOL}/sync-3.js${EOL}/sync-2.js${EOL}/sync-4.js${EOL}/sync-5.js${EOL}/async.js${EOL}/async-3.js${EOL}/async-2.js${EOL}/async-4.js${EOL}/async-5.js${EOL}`);
+});
+
+test('should compile complete file using helpers for scripts and styles', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers.tmpl'));
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import${EOL}headAssets: ${EOL}bodyAssets: ${EOL}`;
+  
+  let result = await template.render();
+  console.log(result);
+  t.deepEqual(result, expectedResult);
 });

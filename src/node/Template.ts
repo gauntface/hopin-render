@@ -169,6 +169,17 @@ export class Template {
 
   async render(data?: object, opts?: RenderOptions) {
     const handlebarsInstance = handlebars.create();
+    handlebarsInstance.registerHelper('hopin.headAssets', () => {
+      console.log('WOOOOHHHOOOOOOOO');
+      const text = Handlebars.Utils.escapeExpression('Just a test');
+    
+      var result = '<a href="' + 'no-url' + '">' + text + '</a>';
+    
+      return new Handlebars.SafeString(result);
+    });
+    handlebarsInstance.registerHelper('hopin.bodyAssets', () => {
+      return '<a href="' + 'just-a-test' + '">' + 'hello-world' + '</a>';
+    });
 
     const compilation = await this.compile();
 
