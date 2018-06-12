@@ -120,9 +120,17 @@ test('should compile complete file with partials and extras, merging styles and 
   t.deepEqual(result, `hello from partial import${EOL}hello from nested partial import${EOL}/* Inline CSS */${EOL}${EOL}/* Inline CSS-3 */${EOL}${EOL}/* Inline CSS-2 */${EOL}${EOL}/* Inline CSS-4 */${EOL}${EOL}/* Inline CSS-5 */${EOL}/sync.css${EOL}/sync-3.css${EOL}/sync-2.css${EOL}/sync-4.css${EOL}/sync-5.css${EOL}/async.css${EOL}/async-3.css${EOL}/async-2.css${EOL}/async-4.css${EOL}/async-5.css${EOL}${EOL}/* Inline JS */${EOL}${EOL}/* Inline JS-3 */${EOL}${EOL}/* Inline JS-2 */${EOL}${EOL}/* Inline JS-4 */${EOL}${EOL}/* Inline JS-5 */${EOL}/sync.js${EOL}/sync-3.js${EOL}/sync-2.js${EOL}/sync-4.js${EOL}/sync-5.js${EOL}/async.js${EOL}/async-3.js${EOL}/async-2.js${EOL}/async-4.js${EOL}/async-5.js${EOL}`);
 });
 
-test('should compile complete file using helpers for scripts and styles', async (t) => {
-  const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers.tmpl'));
-  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n\n`;
+test('should compile complete file using helpers for scripts (with modules) and styles', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers-with-modules.tmpl'));
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js" nomodule></script>\n<script src="/sync-3.mjs" type="module"></script>\n<script src="/sync-2.js" nomodule></script>\n<script src="/sync-4.js" nomodule></script>\n<script src="/async.js" async defer nomodule></script>\n<script src="/async-3.mjs" async defer type="module"></script>\n<script src="/async-2.js" async defer nomodule></script>\n<script src="/async-4.js" async defer nomodule></script>`;
+  
+  let result = await template.render();
+  t.deepEqual(result, expectedResult);
+});
+
+test('should compile complete file using helpers for scripts (without modules) and styles', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers-without-modules.tmpl'));
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>`;
   
   let result = await template.render();
   t.deepEqual(result, expectedResult);

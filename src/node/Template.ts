@@ -217,18 +217,64 @@ export class Template {
     }
 
     handlebarsInstance.registerHelper('hopin_headAssets', () => {
-      let result = '';
+      const lines = [];
       for (const inlineStyle of compilation.styles.inline) {
-        result += `<style>${handlebars.escapeExpression(inlineStyle.trim())}</style>\n`;
+        lines.push(`<style>${handlebars.escapeExpression(inlineStyle.trim())}</style>`);
       }
       for (const syncStyle of compilation.styles.sync) {
-        result += `<link rel="stylesheet" type="text/css" href="${handlebars.escapeExpression(syncStyle)}" />\n`;
+        lines.push(`<link rel="stylesheet" type="text/css" href="${handlebars.escapeExpression(syncStyle)}" />`);
       }
-      return new handlebars.SafeString(result);
+      return new handlebars.SafeString(lines.join('\n'));
     });
 
     handlebarsInstance.registerHelper('hopin_bodyAssets', () => {
-      return '';
+      // async styles
+      // sync scripts
+      // async scripts
+      const lines = [];
+      for (const inlineScript of compilation.scripts.inline) {
+        lines.push(`<script>${handlebars.escapeExpression(inlineScript.trim())}</script>`);
+      }
+
+      let hasModules = false;
+      for (const script of [...compilation.scripts.sync, ...compilation.scripts.async]) {
+        if (script.endsWith('.mjs')) {
+          hasModules = true;
+          break;
+        }
+      }
+
+      for (const syncScript of compilation.scripts.sync) {
+        const attributes = [
+          `src="${handlebars.escapeExpression(syncScript)}"`,
+        ];
+        if (hasModules) {
+          if (syncScript.endsWith('.mjs')) {
+            attributes.push('type="module"');
+          } else {
+            attributes.push('nomodule');
+          }
+        }
+        lines.push(`<script ${attributes.join(' ')}></script>`);
+      }
+
+      for (const asyncScript of compilation.scripts.async) {
+        const attributes = [
+          `src="${handlebars.escapeExpression(asyncScript)}"`,
+          'async',
+          'defer',
+        ];
+        if (hasModules) {
+          if (asyncScript.endsWith('.mjs')) {
+            attributes.push('type="module"');
+          } else {
+            attributes.push('nomodule');
+          }
+        }
+        lines.push(`<script ${attributes.join(' ')}></script>`);
+      }
+
+      return new handlebars.SafeString(lines.join('\n'));
     });
 
     const handlebarsTemplate = handlebarsInstance.compile(this.template);

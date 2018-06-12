@@ -1,0 +1,28 @@
+---
+styles:
+  inline:
+    - ./inline.css
+    - ./inline-3.css
+  sync:
+    - /sync.css
+    - /sync-3.css
+  async:
+    - /async.css
+    - /async-3.css
+scripts:
+  inline:
+    - ./inline.js
+    - ./inline-3.js
+  sync:
+    - /sync.js
+    - /sync-3.mjs
+  async:
+    - /async.js
+    - /async-3.mjs
+partials:
+- ./partial-import-with-styles-and-scripts.tmpl
+---
+{{> "./partial-import-with-styles-and-scripts.tmpl"}}
+
+{{hopin_headAssets}}
+{{hopin_bodyAssets}}
