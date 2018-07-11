@@ -6,6 +6,11 @@ import * as path from 'path';
 import { compileFile } from '.';
 import {logger} from "./utils/logger";
 
+interface InlineScript {
+  src: string;
+  type: 'nomodule'|'module';
+}
+
 interface RenderOptions {
   styles?: {
     inline?: string[];
@@ -13,22 +18,28 @@ interface RenderOptions {
     async?: string[];
   };
   scripts?: {
-    inline?: string[];
+    inline?: (InlineScript|string)[];
     sync?: string[];
     async?: string[];
   };
 }
 
-interface AssetGroup {
+interface StylesAssetGroup {
   inline: Set<string>;
+  sync: Set<string>;
+  async: Set<string>;
+}
+
+interface ScriptsAssetGroup {
+  inline: Set<InlineScript>;
   sync: Set<string>;
   async: Set<string>;
 }
 
 interface YamlData {
   partials: string[];
-  styles: AssetGroup;
-  scripts: AssetGroup;
+  styles: StylesAssetGroup;
+  scripts: ScriptsAssetGroup;
   data: object;
 }
 
@@ -38,30 +49,32 @@ interface PartialMap {
 
 interface Compilation {
   partials: PartialMap;
-  styles: AssetGroup;
-  scripts: AssetGroup;
+  styles: StylesAssetGroup;
+  scripts: ScriptsAssetGroup;
 }
 
 export class Template {
   private relativePath: string;
   private template: string;
-  private yaml: YamlData | null;
+  private yaml: RenderOptions | null;
 
   constructor(template: string, relativePath?: string) {
     const parseFrontMatter = matter(template);
 
     this.relativePath = relativePath || process.cwd();
     this.template = parseFrontMatter.content;
-    this.yaml = parseFrontMatter.data as YamlData | null;
+    this.yaml = parseFrontMatter.data as RenderOptions | null;
   }
 
   private async compile(): Promise<Compilation> {
     const partials = await this.loadPartials();
 
+    console.log('Compile: ', this.yaml.scripts);
+
     const compilation = {
       partials,
-      styles: await this.loadAssetGroup(this.yaml.styles),
-      scripts: await this.loadAssetGroup(this.yaml.scripts),
+      styles: await this.loadStylesAssetGroup(this.yaml.styles),
+      scripts: await this.loadScriptsAssetGroup(this.yaml.scripts),
     };
 
     // We need to get all of the partial styles and scripts
@@ -119,7 +132,7 @@ export class Template {
     return partials;
   }
 
-  private async loadAssetGroup(group: AssetGroup|undefined): Promise<AssetGroup> {
+  private async loadStylesAssetGroup(group: StylesAssetGroup|undefined): Promise<StylesAssetGroup> {
     if (!group) {
       return {
         inline: new Set<string>(),
@@ -133,6 +146,46 @@ export class Template {
       sync: this.loadDirectAssets(group.sync),
       async: this.loadDirectAssets(group.async),
     };
+  }
+
+  private async loadScriptsAssetGroup(group: ScriptsAssetGroup|undefined): Promise<ScriptsAssetGroup> {
+    if (!group) {
+      return {
+        inline: new Set<InlineScript>(),
+        sync: new Set<string>(),
+        async: new Set<string>(),
+      };
+    }
+
+    return {
+      inline: await this.loadInlineScriptAssets(group.inline),
+      sync: this.loadDirectAssets(group.sync),
+      async: this.loadDirectAssets(group.async),
+    };
+  }
+
+  private async loadInlineScriptAssets(assets: Set<InlineScript>|undefined): Promise<Set<InlineScript>> {
+    if (!assets) {
+      return new Set<InlineScript>();
+    }
+
+    // Convert to absolute paths, use a set to de-dupe assets
+    const absPathAssets = new Set<InlineScript>();
+    for (const asset of Array.from(assets)) {
+      logger.log('Loading inline script: ', asset);
+      let absPath = asset.src;
+      if (!path.isAbsolute(absPath)) {
+        absPath = path.join(this.relativePath, absPath);
+      }
+      absPathAssets.add({src: absPath, type: asset.type});
+    }
+
+    // Get all of the asset file contents
+    const assetContents = await Promise.all(Array.from(absPathAssets).map(async (asset) => {
+      const pathBuffer = await fs.readFile(asset.src);
+      return {src: pathBuffer.toString(), type: asset.type};
+    }));
+    return new Set<InlineScript>(assetContents);
   }
 
   private async loadInlineAssets(assets: Set<string>|undefined): Promise<Set<string>> {
@@ -200,7 +253,11 @@ export class Template {
       if (opts.scripts) {
         if (opts.scripts.inline) {
           for (const script of opts.scripts.inline) {
-            compilation.scripts.inline.add(script);
+            if (typeof script === 'string') {
+              compilation.scripts.inline.add({src: script, type: 'nomodule'});
+            } else {
+              compilation.scripts.inline.add(script);
+            }
           }
         }
         if (opts.scripts.sync) {
@@ -229,11 +286,9 @@ export class Template {
 
     handlebarsInstance.registerHelper('hopin_bodyAssets', () => {
       // async styles
-      // sync scripts
-      // async scripts
       const lines = [];
       for (const inlineScript of compilation.scripts.inline) {
-        lines.push(`<script>${handlebars.escapeExpression(inlineScript.trim())}</script>`);
+        lines.push(`<script>${handlebars.escapeExpression(inlineScript.src.trim())}</script>`);
       }
 
       let hasModules = false;
