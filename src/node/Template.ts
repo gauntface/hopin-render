@@ -11,7 +11,12 @@ interface InlineScript {
   type: 'nomodule'|'module';
 }
 
-interface RenderOptions {
+interface InlineScriptSet {
+  [key: string]: InlineScript;
+}
+
+interface RawYamlData {
+  partials?: string[];
   styles?: {
     inline?: string[];
     sync?: string[];
@@ -31,7 +36,7 @@ interface StylesAssetGroup {
 }
 
 interface ScriptsAssetGroup {
-  inline: Set<InlineScript>;
+  inline: InlineScriptSet;
   sync: Set<string>;
   async: Set<string>;
 }
@@ -41,6 +46,7 @@ interface YamlData {
   styles: StylesAssetGroup;
   scripts: ScriptsAssetGroup;
   data: object;
+  rawYaml: object;
 }
 
 interface PartialMap {
@@ -56,20 +62,66 @@ interface Compilation {
 export class Template {
   private relativePath: string;
   private template: string;
-  private yaml: RenderOptions | null;
+  private yaml: YamlData | null;
 
   constructor(template: string, relativePath?: string) {
     const parseFrontMatter = matter(template);
 
     this.relativePath = relativePath || process.cwd();
     this.template = parseFrontMatter.content;
-    this.yaml = parseFrontMatter.data as RenderOptions | null;
+    const rawYamlData = parseFrontMatter.data as RawYamlData | null;
+    this.yaml = this.convertYamlData(rawYamlData);
+  }
+
+  private convertYamlData(rawData: RawYamlData | null): YamlData {
+    let filteredVersion = rawData;
+    if (!filteredVersion) {
+      filteredVersion = {};
+    }
+
+    filteredVersion.partials = filteredVersion.partials ? filteredVersion.partials : [];
+
+    filteredVersion.styles = filteredVersion.styles ? filteredVersion.styles : {};
+    filteredVersion.styles.inline = filteredVersion.styles.inline ? filteredVersion.styles.inline : [];
+    filteredVersion.styles.sync = filteredVersion.styles.sync ? filteredVersion.styles.sync : [];
+    filteredVersion.styles.async = filteredVersion.styles.async ? filteredVersion.styles.async : [];
+
+    filteredVersion.scripts = filteredVersion.scripts ? filteredVersion.scripts : {};
+    filteredVersion.scripts.inline = filteredVersion.scripts.inline ? filteredVersion.scripts.inline : [];
+    filteredVersion.scripts.sync = filteredVersion.scripts.sync ? filteredVersion.scripts.sync : [];
+    filteredVersion.scripts.async = filteredVersion.scripts.async ? filteredVersion.scripts.async : [];
+
+    const parsedInlineScripts: InlineScriptSet = {};
+    for (const script of filteredVersion.scripts.inline) {
+      if (typeof script === 'string') {
+        parsedInlineScripts[script] = {
+          src: script,
+          type: 'nomodule',
+        };
+      } else {
+        parsedInlineScripts[script.src] = script;
+      }
+    }
+
+    return {
+      partials: filteredVersion.partials,
+      styles: {
+        inline: new Set<string>(filteredVersion.styles.inline),
+        sync: new Set<string>(filteredVersion.styles.sync),
+        async: new Set<string>(filteredVersion.styles.async),
+      },
+      scripts: {
+        inline: parsedInlineScripts,
+        sync: new Set<string>(filteredVersion.scripts.sync),
+        async: new Set<string>(filteredVersion.scripts.async),
+      },
+      data: {},
+      rawYaml: rawData,
+    };
   }
 
   private async compile(): Promise<Compilation> {
     const partials = await this.loadPartials();
-
-    console.log('Compile: ', this.yaml.scripts);
 
     const compilation = {
       partials,
@@ -90,8 +142,8 @@ export class Template {
         compilation.styles.async.add(asyncStyle);
       }
 
-      for (const inlineScript of Array.from(compiledPartial.scripts.inline)) {
-        compilation.scripts.inline.add(inlineScript);
+      for (const inlineScriptKey of Object.keys(compiledPartial.scripts.inline)) {
+        compilation.scripts.inline[inlineScriptKey] = compiledPartial.scripts.inline[inlineScriptKey];
       }
       for (const syncScript of Array.from(compiledPartial.scripts.sync)) {
         compilation.scripts.sync.add(syncScript);
@@ -151,7 +203,7 @@ export class Template {
   private async loadScriptsAssetGroup(group: ScriptsAssetGroup|undefined): Promise<ScriptsAssetGroup> {
     if (!group) {
       return {
-        inline: new Set<InlineScript>(),
+        inline: {},
         sync: new Set<string>(),
         async: new Set<string>(),
       };
@@ -164,28 +216,31 @@ export class Template {
     };
   }
 
-  private async loadInlineScriptAssets(assets: Set<InlineScript>|undefined): Promise<Set<InlineScript>> {
+  private async loadInlineScriptAssets(assets: InlineScriptSet|undefined): Promise<InlineScriptSet> {
     if (!assets) {
-      return new Set<InlineScript>();
+      return {};
     }
 
     // Convert to absolute paths, use a set to de-dupe assets
-    const absPathAssets = new Set<InlineScript>();
-    for (const asset of Array.from(assets)) {
-      logger.log('Loading inline script: ', asset);
+    const absPathAssets: InlineScriptSet = {};
+    for (const assetKey of Object.keys(assets)) {
+      const asset = assets[assetKey];
       let absPath = asset.src;
       if (!path.isAbsolute(absPath)) {
         absPath = path.join(this.relativePath, absPath);
       }
-      absPathAssets.add({src: absPath, type: asset.type});
+      absPathAssets[absPath] = {src: absPath, type: asset.type};
     }
 
     // Get all of the asset file contents
-    const assetContents = await Promise.all(Array.from(absPathAssets).map(async (asset) => {
+    const assetContents: InlineScriptSet = {};
+    await Promise.all(Object.keys(absPathAssets).map(async (assetKey) => {
+      const asset = absPathAssets[assetKey];
       const pathBuffer = await fs.readFile(asset.src);
-      return {src: pathBuffer.toString(), type: asset.type};
+      // TODO: This looks like a race condition waiting to be an issue.
+      assetContents[assetKey] = {src: pathBuffer.toString(), type: asset.type};
     }));
-    return new Set<InlineScript>(assetContents);
+    return assetContents;
   }
 
   private async loadInlineAssets(assets: Set<string>|undefined): Promise<Set<string>> {
@@ -220,11 +275,10 @@ export class Template {
     return new Set(assets);
   }
 
-  async render(data?: object, opts?: RenderOptions) {
+  async render(data?: object, opts?: RawYamlData) {
     const handlebarsInstance = handlebars.create();
 
     const compilation = await this.compile();
-
     for (const partialName of Object.keys(compilation.partials)) {
       const template = compilation.partials[partialName];
       const renderedPartial = await template.render(data);
@@ -254,9 +308,9 @@ export class Template {
         if (opts.scripts.inline) {
           for (const script of opts.scripts.inline) {
             if (typeof script === 'string') {
-              compilation.scripts.inline.add({src: script, type: 'nomodule'});
+              compilation.scripts.inline[script] = {src: script, type: 'nomodule'};
             } else {
-              compilation.scripts.inline.add(script);
+              compilation.scripts.inline[script.src] = script;
             }
           }
         }
@@ -287,7 +341,8 @@ export class Template {
     handlebarsInstance.registerHelper('hopin_bodyAssets', () => {
       // async styles
       const lines = [];
-      for (const inlineScript of compilation.scripts.inline) {
+      for (const inlineScriptKey of Object.keys(compilation.scripts.inline)) {
+        const inlineScript = compilation.scripts.inline[inlineScriptKey];
         lines.push(`<script>${handlebars.escapeExpression(inlineScript.src.trim())}</script>`);
       }
 
@@ -342,12 +397,12 @@ export class Template {
           async: Array.from(compilation.styles.async),
         },
         scripts: {
-          inline: Array.from(compilation.scripts.inline),
+          inline: Object.keys(compilation.scripts.inline).map((key) => compilation.scripts.inline[key]),
           sync: Array.from(compilation.scripts.sync),
           async: Array.from(compilation.scripts.async),
         },
       },
-      yaml: this.yaml,
+      yaml: this.yaml.rawYaml,
     });
   }
 }
