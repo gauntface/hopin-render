@@ -2,8 +2,8 @@ import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
 import {EOL} from 'os';
-import {compile} from '../../src/index';
-import {logger} from '../../src/utils/logger';
+import {compile} from '../../src/node/index';
+import {logger} from '../../src/node/utils/logger';
 
 test.beforeEach((t) => {
   t.context.sandbox = sinon.createSandbox();
@@ -56,14 +56,13 @@ hello:
 });
 
 test('should throw if partials is not an array', async (t) => {
-  const template = await compile(`---
+  await t.throws(compile(`---
 partials:
   hello:
     world:
       - "I am an example"
 ---
-{{yaml.partials.hello.world}}`);
-  await t.throws(template.render());
+{{yaml.partials.hello.world}}`));
 });
 
 test('should throw if a partials entry is not a string', async (t) => {
@@ -103,6 +102,21 @@ styles:
   const result = await template.render();
   // Seems Mustache is using new line characters regardless on platform here.
   t.deepEqual(result, `/* Inline CSS */${EOL}\n`);
+});
+
+test('should work if inline script file is absolute', async (t) => {
+  const inlinePath = path.join(__dirname, '..', 'static', 'inline.js');
+  const template = await compile(`---
+scripts:
+  inline:
+    - ${inlinePath}
+---
+{{#hopin.scripts.inline}}
+{{{src}}}
+{{/hopin.scripts.inline}}`);
+  const result = await template.render();
+  // Seems Mustache is using new line characters regardless on platform here.
+  t.deepEqual(result, `/* Inline JS */${EOL}\n`);
 });
 
 test('should handle empty styles', async (t) => {

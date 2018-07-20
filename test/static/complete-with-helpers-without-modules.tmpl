@@ -24,22 +24,5 @@ partials:
 ---
 {{> "./partial-import-with-styles-and-scripts.tmpl"}}
 
-{{#hopin.styles.inline}}
-{{{.}}}
-{{/hopin.styles.inline}}
-{{#hopin.styles.sync}}
-{{{.}}}
-{{/hopin.styles.sync}}
-{{#hopin.styles.async}}
-{{{.}}}
-{{/hopin.styles.async}}
-
-{{#hopin.scripts.inline}}
-{{{src}}}
-{{/hopin.scripts.inline}}
-{{#hopin.scripts.sync}}
-{{{.}}}
-{{/hopin.scripts.sync}}
-{{#hopin.scripts.async}}
-{{{.}}}
-{{/hopin.scripts.async}}
+{{hopin_headAssets}}
+{{hopin_bodyAssets}}

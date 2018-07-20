@@ -2,6 +2,9 @@
 scripts:
   inline:
     - ./inline.js
+    - inline-2:
+      src: ./inline-2.js
+      type: nomodule
   sync:
     - ./sync.js
     - /sync.js
@@ -10,7 +13,7 @@ scripts:
     - /async.js
 ---
 {{#hopin.scripts.inline}}
-{{{.}}}
+{{{src}}}
 {{/hopin.scripts.inline}}
 {{#hopin.scripts.sync}}
 {{{.}}}
