@@ -22,6 +22,7 @@ This allows CSS and JS to be loaded in a "best practice-y" way.
 
 Create a template file, in this case `template.tmpl`, with any scripts, styles or partials
 you want to include:
+
 ```html
 ---
 styles:
@@ -43,43 +44,31 @@ partials:
 ---
 <html>
 <head>
-{{#hopin.styles.inline}}
-<style>{{{.}}}</style>
-{{/hopin.styles.inline}}
-{{#hopin.styles.sync}}
-<link rel="stylesheet" href="{{{.}}}">
-{{/hopin.styles.sync}}
+  <title>Example page title</title>
+
+  <!-- Load all inline and sync styles in head of document -->
+  {{hopin_headAssets}}
 </head>
-
 <body>
-{{> "./templates/nav.tmpl"}}
+  {{> "./templates/nav.tmpl"}}
+  
+  <main>
+    <!-- TODO: Add main content here -->
+  </main>
 
-<script>
-  const asyncStyles = [
-    {{#hopin.styles.async}}
-    "{{{.}}}"
-    {{/hopin.styles.async}}
-  ];
-  // TODO: Load styles async
-</script>
-{{#hopin.scripts.inline}}
-<script>{{{.}}}</script>
-{{/hopin.scripts.inline}}
-{{#hopin.scripts.sync}}
-<script src="{{{.}}}"></script>
-{{/hopin.scripts.sync}}
-{{#hopin.scripts.async}}
-<script src="{{{.}}}" async defer></script>
-{{/hopin.scripts.async}}
+  <!-- Load inline, sync, async scripts and async styles -->
+  {{hopin_bodyAssets}}
 </body>
 </html>
 ```
 
-Then tell hopin to compile the template and render it.
+Tell hopin to compile the template and render it.
 
 ```javascript
+const {compileFile} = require('@hopin/render');
+
 const templatePath = path.join(__dirname, 'template.tmpl');
-const hopinTemplate = await compileFile(templatePath);
+const template = await compileFile(templatePath);
 
 const data = {
   hello: 'world',
@@ -96,10 +85,6 @@ const options = {
     async: ['/asynchronous-scripts-here.css'],
   },
 };
-const result = await hopinTemplate.render(data, options);
-console.log(result);
+const htmlString = await template.render(data, options);
+console.log(htmlString);
 ```
-
-## TODO
-
-- Add helper to handle async loading of CSS
