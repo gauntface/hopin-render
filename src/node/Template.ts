@@ -59,21 +59,23 @@ interface Compilation {
 export class Template {
   private relativePath: string;
   private template: string;
-  private yaml: YamlData | null;
+  private yaml: YamlData;
 
   constructor(template: string, relativePath?: string) {
     const parseFrontMatter = matter(template);
 
     this.relativePath = relativePath || process.cwd();
     this.template = parseFrontMatter.content;
-    const rawYamlData = parseFrontMatter.data as RawYamlData | null;
+    const rawYamlData = parseFrontMatter.data as RawYamlData | {};
     this.yaml = this.convertYamlData(rawYamlData);
   }
 
-  private convertYamlData(rawData: RawYamlData | null): YamlData {
-    let filteredVersion = rawData;
-    if (!filteredVersion) {
-      filteredVersion = {};
+  private convertYamlData(rawData: RawYamlData): YamlData {
+    const filteredVersion = rawData;
+
+    if (filteredVersion.partials && !Array.isArray(filteredVersion.partials)) {
+      throw new Error('The \'partials\' yaml field should be a list of strings ' +
+      `but found '${typeof filteredVersion.partials}' instead.`);
     }
 
     filteredVersion.partials = filteredVersion.partials ? filteredVersion.partials : [];
@@ -154,15 +156,6 @@ export class Template {
   }
 
   private async loadPartials(): Promise<PartialMap> {
-    if (!this.yaml.partials) {
-      return {};
-    }
-
-    if (!Array.isArray(this.yaml.partials)) {
-      throw new Error('The \'partials\' yaml field should be a list of strings ' +
-      `but found '${typeof this.yaml.partials}' instead.`);
-    }
-
     const partials: PartialMap = {};
     for (const partialPath of this.yaml.partials) {
       if (typeof partialPath !== 'string') {
@@ -181,15 +174,7 @@ export class Template {
     return partials;
   }
 
-  private async loadStylesAssetGroup(group: StylesAssetGroup|undefined): Promise<StylesAssetGroup> {
-    if (!group) {
-      return {
-        inline: new Set<string>(),
-        sync: new Set<string>(),
-        async: new Set<string>(),
-      };
-    }
-
+  private async loadStylesAssetGroup(group: StylesAssetGroup): Promise<StylesAssetGroup> {
     return {
       inline: await this.loadInlineAssets(group.inline),
       sync: this.loadDirectAssets(group.sync),
@@ -197,15 +182,7 @@ export class Template {
     };
   }
 
-  private async loadScriptsAssetGroup(group: ScriptsAssetGroup|undefined): Promise<ScriptsAssetGroup> {
-    if (!group) {
-      return {
-        inline: new OrderedSet<InlineScript>(),
-        sync: new Set<string>(),
-        async: new Set<string>(),
-      };
-    }
-
+  private async loadScriptsAssetGroup(group: ScriptsAssetGroup): Promise<ScriptsAssetGroup> {
     return {
       inline: await this.loadInlineScriptAssets(group.inline),
       sync: this.loadDirectAssets(group.sync),
@@ -213,11 +190,7 @@ export class Template {
     };
   }
 
-  private async loadInlineScriptAssets(assets: OrderedSet<InlineScript>|undefined): Promise<OrderedSet<InlineScript>> {
-    if (!assets) {
-      return new OrderedSet<InlineScript>();
-    }
-
+  private async loadInlineScriptAssets(assets: OrderedSet<InlineScript>): Promise<OrderedSet<InlineScript>> {
     // Convert to absolute paths, use a set to de-dupe assets
     const absPathAssets = new OrderedSet<InlineScript>();
     for (const asset of assets.values()) {
@@ -237,11 +210,7 @@ export class Template {
     return assetContents;
   }
 
-  private async loadInlineAssets(assets: Set<string>|undefined): Promise<Set<string>> {
-    if (!assets) {
-      return new Set<string>();
-    }
-
+  private async loadInlineAssets(assets: Set<string>): Promise<Set<string>> {
     // Convert to absolute paths, use a set to de-dupe assets
     const absPathAssets = new Set<string>();
     for (const assetPath of Array.from(assets)) {
@@ -260,11 +229,7 @@ export class Template {
     return new Set<string>(assetContents);
   }
 
-  private loadDirectAssets(assets: Set<string>|undefined): Set<string> {
-    if (!assets) {
-      return new Set<string>();
-    }
-
+  private loadDirectAssets(assets: Set<string>): Set<string> {
     // Use a set to de-dupe assets
     return new Set(assets);
   }
@@ -336,7 +301,11 @@ export class Template {
       // async styles
       const lines = [];
       for (const inlineScript of compilation.scripts.inline.values()) {
-        lines.push(`<script>${handlebars.escapeExpression(inlineScript.src.trim())}</script>`);
+        if (inlineScript.type === 'module') {
+          lines.push(`<script type="module">${handlebars.escapeExpression(inlineScript.src.trim())}</script>`);
+        } else {
+          lines.push(`<script>${handlebars.escapeExpression(inlineScript.src.trim())}</script>`);
+        }
       }
 
       let hasModules = false;

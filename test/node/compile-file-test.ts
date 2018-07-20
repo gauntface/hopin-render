@@ -79,7 +79,7 @@ test('should compile basic file with duplicate styles', async (t) => {
 test('should compile basic file with scripts', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/basic-scripts.tmpl'));
   const result = await template.render();
-  t.deepEqual(result, `/* Inline JS */${EOL}${EOL}./sync.js${EOL}/sync.js${EOL}./async.js${EOL}/async.js${EOL}`);
+  t.deepEqual(result, `/* Inline JS */${EOL}${EOL}/* Inline JS-2 */${EOL}${EOL}./sync.js${EOL}/sync.js${EOL}./async.js${EOL}/async.js${EOL}`);
 });
 
 test('should compile basic file with duplicate scripts', async (t) => {
@@ -133,5 +133,26 @@ test('should compile complete file using helpers for scripts (without modules) a
   const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>`;
   
   let result = await template.render();
+  t.deepEqual(result, expectedResult);
+});
+
+test('should compile complete file using helpers for scripts and optional extras', async (t) => {
+  const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers-without-modules.tmpl'));
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script type="module">/* Inline script options (mod) */</script>\n<script>/* Inline script options (no-mod) */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>`;
+  
+  let result = await template.render(null, {
+    scripts: {
+      inline: [
+        {
+          src: '/* Inline script options (mod) */',
+          type: 'module',
+        },
+        {
+          src: '/* Inline script options (no-mod) */',
+          type: 'nomodule',
+        },
+      ],
+    }
+  });
   t.deepEqual(result, expectedResult);
 });
