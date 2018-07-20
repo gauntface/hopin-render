@@ -103,4 +103,3 @@ console.log(result);
 ## TODO
 
 - Add helper to handle async loading of CSS
-- Add helper to handle style and script HTML
