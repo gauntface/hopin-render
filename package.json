@@ -42,7 +42,7 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "@hopin/logger": "0.0.3",
+    "@hopin/logger": "0.0.4",
     "gray-matter": "^4.0.1",
     "handlebars": "^4.0.11"
   },
