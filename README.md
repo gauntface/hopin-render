@@ -18,7 +18,18 @@ This allows CSS and JS to be loaded in a "best practice-y" way.
 <img alt="Steven Universe Nerd" src="https://media.giphy.com/media/ioeYm4g2f7cXe/giphy.gif" />
 </p>
 
+## Installation
+
+```
+npm install @hopin/render --save
+```
+
 ## Usage in Node
+
+There are two approaches to using `@hopin/render`, create a template file and
+use that to generate your HTML or use a string and use that as a template.
+
+### Template Files
 
 Create a template file, in this case `template.tmpl`, with any scripts, styles or partials
 you want to include:
@@ -87,4 +98,43 @@ const options = {
 };
 const htmlString = await template.render(data, options);
 console.log(htmlString);
+```
+
+### Render from Strirng
+
+```javascript
+const {compile} = require('@hopin/render');
+
+const tmplString = `
+---
+styles:
+  inline:
+    - /user/matt/site/styles/index.css
+---
+{{hopin_headAssets}}
+{{hopin_bodyAssets}}
+`;
+
+const template = await compile(tmpString);
+const result = await template.render();
+```
+
+You can pass in an option "relative path" variable to the compile
+function so paths for styles and scripts can be relative.
+
+```javascript
+const {compile} = require('@hopin/render');
+
+const tmplString = `
+---
+styles:
+  inline:
+    - styles/index.css
+---
+{{hopin_headAssets}}
+{{hopin_bodyAssets}}
+`;
+
+const template = await compile(tmpString, '/user/matt/site/');
+const result = await template.render();
 ```
