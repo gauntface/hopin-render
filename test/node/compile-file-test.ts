@@ -122,7 +122,18 @@ test('should compile complete file with partials and extras, merging styles and 
 
 test('should compile complete file using helpers for scripts (with modules) and styles', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers-with-modules.tmpl'));
-  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js" nomodule></script>\n<script src="/sync-3.mjs" type="module"></script>\n<script src="/sync-2.js" nomodule></script>\n<script src="/sync-4.js" nomodule></script>\n<script src="/async.js" async defer nomodule></script>\n<script src="/async-3.mjs" async defer type="module"></script>\n<script src="/async-2.js" async defer nomodule></script>\n<script src="/async-4.js" async defer nomodule></script>`;
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js" nomodule></script>\n<script src="/sync-3.mjs" type="module"></script>\n<script src="/sync-2.js" nomodule></script>\n<script src="/sync-4.js" nomodule></script>\n<script src="/async.js" async defer nomodule></script>\n<script src="/async-3.mjs" async defer type="module"></script>\n<script src="/async-2.js" async defer nomodule></script>\n<script src="/async-4.js" async defer nomodule></script>
+<script>
+window.addEventListener('load', function() {
+  var __hopin_async_styles = ['/async.css','/async-3.css','/async-2.css','/async-4.css'];
+  for(var i = 0; i < __hopin_async_styles.length; i++) {
+    var linkTag = document.createElement('link');
+    linkTag.rel = 'stylesheet';
+    linkTag.href = __hopin_async_styles[i];
+    document.head.appendChild(linkTag);
+  }
+});
+</script>`;
   
   let result = await template.render();
   t.deepEqual(result, expectedResult);
@@ -130,7 +141,18 @@ test('should compile complete file using helpers for scripts (with modules) and 
 
 test('should compile complete file using helpers for scripts (without modules) and styles', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers-without-modules.tmpl'));
-  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>`;
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>
+<script>
+window.addEventListener('load', function() {
+  var __hopin_async_styles = ['/async.css','/async-3.css','/async-2.css','/async-4.css'];
+  for(var i = 0; i < __hopin_async_styles.length; i++) {
+    var linkTag = document.createElement('link');
+    linkTag.rel = 'stylesheet';
+    linkTag.href = __hopin_async_styles[i];
+    document.head.appendChild(linkTag);
+  }
+});
+</script>`;
   
   let result = await template.render();
   t.deepEqual(result, expectedResult);
@@ -138,7 +160,18 @@ test('should compile complete file using helpers for scripts (without modules) a
 
 test('should compile complete file using helpers for scripts and optional extras', async (t) => {
   const template = await compileFile(path.join(__dirname, '../static/complete-with-helpers-without-modules.tmpl'));
-  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script type="module">/* Inline script options (mod) */</script>\n<script>/* Inline script options (no-mod) */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>`;
+  const expectedResult = `hello from partial import${EOL}hello from nested partial import\n<style>/* Inline CSS */</style>\n<style>/* Inline CSS-3 */</style>\n<style>/* Inline CSS-2 */</style>\n<style>/* Inline CSS-4 */</style>\n<link rel="stylesheet" type="text/css" href="/sync.css" />\n<link rel="stylesheet" type="text/css" href="/sync-3.css" />\n<link rel="stylesheet" type="text/css" href="/sync-2.css" />\n<link rel="stylesheet" type="text/css" href="/sync-4.css" />\n<script>/* Inline JS */</script>\n<script>/* Inline JS-3 */</script>\n<script>/* Inline JS-2 */</script>\n<script>/* Inline JS-4 */</script>\n<script type="module">/* Inline script options (mod) */</script>\n<script>/* Inline script options (no-mod) */</script>\n<script src="/sync.js"></script>\n<script src="/sync-3.js"></script>\n<script src="/sync-2.js"></script>\n<script src="/sync-4.js"></script>\n<script src="/async.js" async defer></script>\n<script src="/async-3.js" async defer></script>\n<script src="/async-2.js" async defer></script>\n<script src="/async-4.js" async defer></script>
+<script>
+window.addEventListener('load', function() {
+  var __hopin_async_styles = ['/async.css','/async-3.css','/async-2.css','/async-4.css'];
+  for(var i = 0; i < __hopin_async_styles.length; i++) {
+    var linkTag = document.createElement('link');
+    linkTag.rel = 'stylesheet';
+    linkTag.href = __hopin_async_styles[i];
+    document.head.appendChild(linkTag);
+  }
+});
+</script>`;
   
   let result = await template.render(null, {
     scripts: {

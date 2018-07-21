@@ -346,6 +346,23 @@ export class Template {
         lines.push(`<script ${attributes.join(' ')}></script>`);
       }
 
+      if (compilation.styles.async.size > 0) {
+        const asyncStyles = Array.from(compilation.styles.async).map((style) => {
+          return `'${style}'`;
+        }).join(',');
+        lines.push(`<script>
+window.addEventListener('load', function() {
+  var __hopin_async_styles = [${asyncStyles}];
+  for(var i = 0; i < __hopin_async_styles.length; i++) {
+    var linkTag = document.createElement('link');
+    linkTag.rel = 'stylesheet';
+    linkTag.href = __hopin_async_styles[i];
+    document.head.appendChild(linkTag);
+  }
+});
+</script>`);
+      }
+
       return new handlebars.SafeString(lines.join('\n'));
     });
 

@@ -129,3 +129,11 @@ Hello`);
   const result = await template.render();
   t.deepEqual(result, `Hello`);
 });
+
+test('should handle no yaml with helper methods', async (t) => {
+  const template = await compile(`Hello
+{{hopin_headAssets}}
+{{hopin_bodyAssets}}`);
+  const result = await template.render();
+  t.deepEqual(result, `Hello\n\n`);
+});
