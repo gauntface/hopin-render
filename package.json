@@ -10,6 +10,9 @@
     "typescript:test": "tsc -p ./tsconfigs/test.json --declaration --skipLibCheck",
     "version": "echo 'TODO: ./build-docs && git add docs'"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "nyc": {
     "reporter": [
       "text",
