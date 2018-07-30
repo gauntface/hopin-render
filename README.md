@@ -4,7 +4,7 @@
   <a href="https://travis-ci.org/gauntface/hopin-render"><img src="https://travis-ci.org/gauntface/hopin-render.svg?branch=master" alt="Travis Build Status" /></a>
   <a href="https://coveralls.io/github/gauntface/hopin-render?branch=master"><img src="https://coveralls.io/repos/github/gauntface/hopin-render/badge.svg?branch=master" alt="Coverage Status" /></a>
   <a href="https://david-dm.org/gauntface/hopin-render" title="dependencies status"><img src="https://david-dm.org/gauntface/hopin-render/status.svg"/></a>
-  <a href="https://david-dm.org/gauntface/hopin-rebder?type=dev" title="devDependencies status"><img src="https://david-dm.org/gauntface/hopin-render/dev-status.svg"/></a>
+  <a href="https://david-dm.org/gauntface/hopin-render?type=dev" title="devDependencies status"><img src="https://david-dm.org/gauntface/hopin-render/dev-status.svg"/></a>
   <a href="https://david-dm.org/gauntface/hopin-render?type=peer" title="peerDependencies status"><img src="https://david-dm.org/gauntface/hopin-render/peer-status.svg"/></a>
 </p>
 
