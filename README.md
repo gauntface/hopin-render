@@ -1,4 +1,4 @@
-<h1  align="center">hopin-render</h1>
+<h1  align="center">@hopin/render</h1>
 
 <p align="center">
   <a href="https://travis-ci.org/gauntface/hopin-render"><img src="https://travis-ci.org/gauntface/hopin-render.svg?branch=master" alt="Travis Build Status" /></a>
