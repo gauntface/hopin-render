@@ -1,0 +1,42 @@
+---
+hello:
+  world:
+    - "I'm an example"
+data:
+  exampleObj:
+    top: example string
+    nesting:
+      - Nesting array 1
+      - Nesting array 2
+styles:
+  inline:
+    - ./inline-rel.css
+    - /inline-abs.css
+  sync:
+    - ./sync-rel.css
+    - /sync-abs.css
+  async:
+    - ./async-rel.css
+    - /async-abs.css
+scripts:
+  inline:
+    - ./inline-rel.js
+    - /inline-abs.js
+    - inline-2:
+      src: ./inline-2-rel.js
+      type: nomodule
+    - inline-3:
+        src: /inline-3-abs.js
+        type: module
+  sync:
+    - ./sync-rel.js
+    - /sync-abs.js
+  async:
+    - ./async-rel.js
+    - /async-abs.js
+partials:
+  - ./partial-rel.tmpl
+  - /partial-abs.tmpl
+---
+
+<h1>Example Content</h1>

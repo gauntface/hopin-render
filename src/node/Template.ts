@@ -1,9 +1,11 @@
+/*
 import * as handlebars from 'handlebars';
-import * as matter from 'gray-matter';
+
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import {renderMarkdown} from '@hopin/markdown';
 
-import { compileFile } from '.';
+import { compileFile } from './index-old';
 import {OrderedSet} from './models/OrderedSet';
 import {logger} from "./utils/logger";
 
@@ -12,48 +14,8 @@ interface InlineScript {
   type: 'nomodule'|'module';
 }
 
-interface RawYamlData {
-  partials?: string[];
-  styles?: {
-    inline?: string[];
-    sync?: string[];
-    async?: string[];
-  };
-  scripts?: {
-    inline?: Array<InlineScript|string>;
-    sync?: string[];
-    async?: string[];
-  };
-}
-
-interface StylesAssetGroup {
-  inline: Set<string>;
-  sync: Set<string>;
-  async: Set<string>;
-}
-
-interface ScriptsAssetGroup {
-  inline: OrderedSet<InlineScript>;
-  sync: Set<string>;
-  async: Set<string>;
-}
-
-interface YamlData {
-  partials: string[];
-  styles: StylesAssetGroup;
-  scripts: ScriptsAssetGroup;
-  data: object;
-  rawYaml: object;
-}
-
 interface PartialMap {
   [partialName: string]: Template;
-}
-
-interface Compilation {
-  partials: PartialMap;
-  styles: StylesAssetGroup;
-  scripts: ScriptsAssetGroup;
 }
 
 export class Template {
@@ -62,11 +24,7 @@ export class Template {
   private yaml: YamlData;
 
   constructor(template: string, relativePath?: string) {
-    const parseFrontMatter = matter(template);
-
     this.relativePath = relativePath || process.cwd();
-    this.template = parseFrontMatter.content;
-    const rawYamlData = parseFrontMatter.data as RawYamlData | {};
     this.yaml = this.convertYamlData(rawYamlData);
   }
 
@@ -386,6 +344,19 @@ window.addEventListener('load', function() {
   }
 }
 
+export class MarkdownTemplate extends Template {
+  async render(data?: object, opts?: RawYamlData) {
+    const renderedString = await super.render(data, opts);
+    const result = await renderMarkdown(renderedString);
+    // TODO: How to add additional styles based on the parsed markdown??
+    return result.html;
+  }
+}
+
 export async function generateTemplate(template: string, relativePath?: string): Promise<Template> {
   return new Template(template, relativePath);
 }
+
+export async function generateMarkdownTemplate(template: string, relativePath?: string): Promise<Template> {
+  return new MarkdownTemplate(template, relativePath);
+}*/
