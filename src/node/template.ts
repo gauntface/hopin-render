@@ -8,6 +8,14 @@ export class Template {
     this.yaml = yaml;
     this.rawText = rawText;
   }
+
+  render() {
+    // 1. Collect all yaml
+
+    // 2. pass this templates text along with all yaml to renderer
+
+    // 3. return result
+  }
 }
 /*
 import * as handlebars from 'handlebars';
