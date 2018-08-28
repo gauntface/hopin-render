@@ -1,43 +1,59 @@
 import * as matter from 'gray-matter';
 import * as path from 'path';
 
-import {OrderedSet} from './models/OrderedSet';
+import {OrderedSet} from './models/ordered-set';
+import { Template } from './template';
+import { createTemplateFromFile } from '.';
 
-export async function generateTemplate(rawYamlAndText: string, relativePath?: string) {
+export async function generateTemplate(rawYamlAndText: string, relativePath?: string): Promise<Template> {
   if (!relativePath) {
     relativePath = process.cwd();
   }
 
   const {yaml, rawText} = await seperateYamlAndText(rawYamlAndText, relativePath);
-  console.log(yaml, rawText);
+  return new Template(yaml, rawText);
 }
 
 export async function seperateYamlAndText(rawYamlAndText: string, relativePath: string): Promise<{yaml: YAMLData, rawText: string}> {
   const parseFrontMatter = matter(rawYamlAndText);
+  const yaml = new YAMLData();
+  await yaml.init(parseFrontMatter.data, relativePath);
   return {
-    yaml: new YAMLData(parseFrontMatter.data, relativePath),
+    yaml,
     rawText: parseFrontMatter.content.trim(),
   };
 }
 
+function getYamlData() {
+  
+}
+
 export class YAMLData {
-  partials: OrderedSet<string>;
+  partials: OrderedSet<Partial>;
   styles: StylesAssetGroup;
   scripts: ScriptsAssetGroup;
   yaml: {};
 
+  // TODO: This should be a factory method rather than something on the class
   // tslint:disable-next-line: no-any
-  constructor(data: any = {}, relativePath: string) {
+  async init(data: any = {}, relativePath: string) {
     this.partials = new OrderedSet();
     this.styles = new StylesAssetGroup();
     this.scripts = new ScriptsAssetGroup();
     this.yaml = data;
 
+    // TODO: Add some error logging for bad inputs
+    // TODO: Add a strict mode?
+
     if (data.partials && Array.isArray(data.partials)) {
       for (const p of data.partials) {
         if (typeof p === 'string') {
           const absPath = path.resolve(relativePath, p);
-          this.partials.add(absPath, absPath);
+          const template = await createTemplateFromFile(absPath);
+          this.partials.add(p, {
+            id: p,
+            template,
+          });
         }
       }
     }
@@ -110,6 +126,10 @@ export class YAMLData {
       }
     }
   }
+
+  merge(yaml: YAMLData) {
+    // TODO: Merge everything
+  }
 }
 
 class StylesAssetGroup {
@@ -139,4 +159,9 @@ class ScriptsAssetGroup {
 interface InlineScript {
   src: string;
   type: 'nomodule'|'module';
+}
+
+export interface Partial {
+  id: string;
+  template: Template;
 }

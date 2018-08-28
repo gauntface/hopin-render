@@ -1,3 +1,14 @@
+import {YAMLData} from './template-generator';
+
+export class Template {
+  yaml: YAMLData;
+  private rawText: string;
+
+  constructor(yaml: YAMLData, rawText: string) {
+    this.yaml = yaml;
+    this.rawText = rawText;
+  }
+}
 /*
 import * as handlebars from 'handlebars';
 
@@ -9,14 +20,6 @@ import { compileFile } from './index-old';
 import {OrderedSet} from './models/OrderedSet';
 import {logger} from "./utils/logger";
 
-interface InlineScript {
-  src: string;
-  type: 'nomodule'|'module';
-}
-
-interface PartialMap {
-  [partialName: string]: Template;
-}
 
 export class Template {
   private relativePath: string;
@@ -26,55 +29,6 @@ export class Template {
   constructor(template: string, relativePath?: string) {
     this.relativePath = relativePath || process.cwd();
     this.yaml = this.convertYamlData(rawYamlData);
-  }
-
-  private convertYamlData(rawData: RawYamlData): YamlData {
-    const filteredVersion = rawData;
-
-    if (filteredVersion.partials && !Array.isArray(filteredVersion.partials)) {
-      throw new Error('The \'partials\' yaml field should be a list of strings ' +
-      `but found '${typeof filteredVersion.partials}' instead.`);
-    }
-
-    filteredVersion.partials = filteredVersion.partials ? filteredVersion.partials : [];
-
-    filteredVersion.styles = filteredVersion.styles ? filteredVersion.styles : {};
-    filteredVersion.styles.inline = filteredVersion.styles.inline ? filteredVersion.styles.inline : [];
-    filteredVersion.styles.sync = filteredVersion.styles.sync ? filteredVersion.styles.sync : [];
-    filteredVersion.styles.async = filteredVersion.styles.async ? filteredVersion.styles.async : [];
-
-    filteredVersion.scripts = filteredVersion.scripts ? filteredVersion.scripts : {};
-    filteredVersion.scripts.inline = filteredVersion.scripts.inline ? filteredVersion.scripts.inline : [];
-    filteredVersion.scripts.sync = filteredVersion.scripts.sync ? filteredVersion.scripts.sync : [];
-    filteredVersion.scripts.async = filteredVersion.scripts.async ? filteredVersion.scripts.async : [];
-
-    const parsedInlineScripts = new OrderedSet<InlineScript>();
-    for (const script of filteredVersion.scripts.inline) {
-      if (typeof script === 'string') {
-        parsedInlineScripts.add(script, {
-          src: script,
-          type: 'nomodule',
-        });
-      } else {
-        parsedInlineScripts.add(script.src, script);
-      }
-    }
-
-    return {
-      partials: filteredVersion.partials,
-      styles: {
-        inline: new Set<string>(filteredVersion.styles.inline),
-        sync: new Set<string>(filteredVersion.styles.sync),
-        async: new Set<string>(filteredVersion.styles.async),
-      },
-      scripts: {
-        inline: parsedInlineScripts,
-        sync: new Set<string>(filteredVersion.scripts.sync),
-        async: new Set<string>(filteredVersion.scripts.async),
-      },
-      data: {},
-      rawYaml: rawData,
-    };
   }
 
   private async compile(): Promise<Compilation> {
@@ -113,24 +67,7 @@ export class Template {
     return compilation;
   }
 
-  private async loadPartials(): Promise<PartialMap> {
-    const partials: PartialMap = {};
-    for (const partialPath of this.yaml.partials) {
-      if (typeof partialPath !== 'string') {
-        throw new Error('Found a partial that is not a string: ' +
-          `'${partialPath}'`);
-      }
-
-      let absPath = partialPath;
-      if (!path.isAbsolute(partialPath)) {
-        absPath = path.join(this.relativePath, partialPath);
-      }
-
-      const template = await compileFile(absPath);
-      partials[partialPath] = template;
-    }
-    return partials;
-  }
+  
 
   private async loadStylesAssetGroup(group: StylesAssetGroup): Promise<StylesAssetGroup> {
     return {

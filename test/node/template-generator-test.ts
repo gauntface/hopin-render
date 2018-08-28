@@ -2,18 +2,21 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {test} from 'ava';
 
+import {createTemplateFromFile} from '../../src/node/index';
 import {seperateYamlAndText} from '../../src/node/template-generator';
 
 const staticDir = path.join(__dirname, '..', 'static');
 
-test('should compile empty file with relative path', async (t) => {
+test('should generate example template', async (t) => {
   const rawInput = await fs.readFile(path.join(staticDir, 'yaml-example.tmpl'));
   const {yaml, rawText} = await seperateYamlAndText(rawInput.toString(), staticDir);
   
   // Partials
   t.deepEqual(yaml.partials.values(), [
-    path.join(staticDir, 'partial-rel.tmpl'),
-    '/partial-abs.tmpl',
+    {
+      id: './extra-files/partials-example-nested-import.tmpl',
+      template: await createTemplateFromFile(path.join(staticDir, 'extra-files', 'partials-example-nested-import.tmpl')),
+    }
   ]);
   
   // Styles
@@ -113,11 +116,10 @@ test('should compile empty file with relative path', async (t) => {
       ],
     },
     partials: [
-      './partial-rel.tmpl',
-      '/partial-abs.tmpl',
+      './extra-files/partials-example-nested-import.tmpl',
     ],
   });
 
   // Content
-  t.deepEqual(rawText, '<h1>Example Content</h1>');
+  t.deepEqual(rawText, '<h1>Example HTML</h1>\n\n## Example Markdown');
 });
