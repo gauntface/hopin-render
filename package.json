@@ -35,7 +35,7 @@
     "nyc": "13.0.1",
     "rollup": "0.64.1",
     "rollup-plugin-sourcemaps": "0.4.2",
-    "rollup-plugin-terser": "1.0.1",
+    "rollup-plugin-terser": "2.0.1",
     "rollup-stream": "1.24.1",
     "sinon": "6.1.5",
     "tslint": "5.11.0",
