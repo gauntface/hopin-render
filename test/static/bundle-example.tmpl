@@ -24,8 +24,10 @@ partials:
   - ./extra-files/partials-example-import.tmpl
 ---
 
-<h1>Top Level HTML</h1>
+<h1>HTML</h1>
+# MD
 
-# Top Level MD
+{{ yaml.hello }}
+{{ data.hello }}
 
 {{> ./extra-files/partials-example-import.tmpl}}

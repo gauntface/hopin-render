@@ -1,3 +1,4 @@
+import * as handlebars from 'handlebars';
 import {Partial} from './create-bundle';
 import { OrderedSet } from './models/ordered-set';
 
@@ -12,14 +13,40 @@ export class Template {
     this.yaml = yaml;
   }
 
-  render() {
-    // 1. Collect all yaml
+  async render(data: {} = {}, opts: RenderOpts = {}): Promise<string> {
+    const handlebarsInstance = await this.getHandlebars(data);
 
-    // 2. pass this templates text along with all yaml to renderer
+    if (opts.helpers) {
+      // Register additional template helpers
+      for (const helperName of Object.keys(opts.helpers)) {
+        handlebarsInstance.registerHelper(helperName, opts.helpers[helperName]);
+      }
+    }
 
-    // 3. return result
+    const handlebarsTemplate = handlebarsInstance.compile(this.content);
+    return handlebarsTemplate({
+      yaml: this.yaml,
+      data,
+    });
+  }
+
+  async getHandlebars(data?: {}): Promise<typeof handlebars> {
+    const handlebarsInstance = handlebars.create();
+  
+    // Register partials
+    for (const partial of this.partials.values()) {
+      const renderedPartial = await partial.template.render(data);
+      handlebarsInstance.registerPartial(partial.id, renderedPartial);
+    }
+
+    return handlebarsInstance;
   }
 }
+
+type RenderOpts = {
+  helpers?: {[key: string]: Function}
+};
+
 /*
 import * as handlebars from 'handlebars';
 

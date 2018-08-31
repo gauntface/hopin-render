@@ -88,7 +88,7 @@ test('should generate bundle', async (t) => {
   // tslint:disable-next-line:no-any
   t.deepEqual((bundle.template.yaml as any)['hello'], 'world 1');
 
-  t.deepEqual(bundle.template.content, '<h1>Top Level HTML</h1>\n\n# Top Level MD\n\n{{> ./extra-files/partials-example-import.tmpl}}');
+  t.deepEqual(bundle.template.content, '<h1>HTML</h1>\n# MD\n\n{{ yaml.hello }}\n{{ data.hello }}\n\n{{> ./extra-files/partials-example-import.tmpl}}');
 
   const childTemplatesOne = bundle.template.partials.values();
   t.deepEqual(childTemplatesOne.length, 1);
@@ -97,7 +97,7 @@ test('should generate bundle', async (t) => {
   // tslint:disable-next-line:no-any
   t.deepEqual((templateTwo.yaml as any)['hello'], 'world 2');
   t.deepEqual(idTwo, './extra-files/partials-example-import.tmpl');
-  t.deepEqual(templateTwo.content, '{{> ./partials-example-nested-import.tmpl}}');
+  t.deepEqual(templateTwo.content, '<h2>HTML</h2>\n## MD\n\n{{ yaml.hello }}\n{{ data.hello }}\n\n{{> ./partials-example-nested-import.tmpl}}');
 
   const childTemplatesTwo = templateTwo.partials.values();
   t.deepEqual(childTemplatesTwo.length, 1);
@@ -106,5 +106,5 @@ test('should generate bundle', async (t) => {
   // tslint:disable-next-line:no-any
   t.deepEqual((templateThree.yaml as any)['hello'], 'world 3');
   t.deepEqual(idThree, './partials-example-nested-import.tmpl');
-  t.deepEqual(templateThree.content, '<p>Nested partial HTML</p>\n\nNest partial MD');
+  t.deepEqual(templateThree.content, '<h3>HTML</h3>\n### MD\n\n{{ yaml.hello }}\n{{ data.hello }}');
 });
