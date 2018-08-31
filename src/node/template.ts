@@ -1,12 +1,15 @@
-import {YAMLData} from './template-generator';
+import {Partial} from './create-bundle';
+import { OrderedSet } from './models/ordered-set';
 
 export class Template {
-  yaml: YAMLData;
-  private rawText: string;
+  content: string;
+  partials: OrderedSet<Partial>;
+  yaml: {};
 
-  constructor(yaml: YAMLData, rawText: string) {
+  constructor(content: string, partials: OrderedSet<Partial>, yaml: {}) {
+    this.content = content;
+    this.partials = partials;
     this.yaml = yaml;
-    this.rawText = rawText;
   }
 
   render() {

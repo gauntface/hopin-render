@@ -2,39 +2,35 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {test} from 'ava';
 
-import {createTemplateFromFile} from '../../src/node/index';
-import {seperateYamlAndText} from '../../src/node/template-generator';
+import {parseYaml} from '../../src/node/parse-yaml';
 
 const staticDir = path.join(__dirname, '..', 'static');
 
-test('should generate example template', async (t) => {
+test('should generate example yaml', async (t) => {
   const rawInput = await fs.readFile(path.join(staticDir, 'yaml-example.tmpl'));
-  const {yaml, rawText} = await seperateYamlAndText(rawInput.toString(), staticDir);
+  const {styles, scripts, partials, content, rawYaml} = await parseYaml(rawInput.toString(), staticDir);
   
   // Partials
-  t.deepEqual(yaml.partials.values(), [
-    {
-      id: './extra-files/partials-example-nested-import.tmpl',
-      template: await createTemplateFromFile(path.join(staticDir, 'extra-files', 'partials-example-nested-import.tmpl')),
-    }
-  ]);
-  
+  t.deepEqual(partials, {
+    './example-partial.tmpl': path.join(staticDir, 'example-partial.tmpl'),
+  });
+
   // Styles
-  t.deepEqual(yaml.styles.inline.values(), [
+  t.deepEqual(styles.inline.values(), [
     path.join(staticDir, 'inline-rel.css'),
     '/inline-abs.css'
   ]);
-  t.deepEqual(yaml.styles.sync.values(), [
+  t.deepEqual(styles.sync.values(), [
     path.join(staticDir, 'sync-rel.css'),
     '/sync-abs.css'
   ]);
-  t.deepEqual(yaml.styles.async.values(), [
+  t.deepEqual(styles.async.values(), [
     path.join(staticDir, 'async-rel.css'),
     '/async-abs.css'
   ]);
 
   // Scripts
-  t.deepEqual(yaml.scripts.inline.values(), [
+  t.deepEqual(scripts.inline.values(), [
     {
       src: path.join(staticDir, 'inline-rel.js'),
       type: 'nomodule',
@@ -52,16 +48,21 @@ test('should generate example template', async (t) => {
       type: 'module',
     },
   ]);
-  t.deepEqual(yaml.scripts.sync.values(), [
+  t.deepEqual(scripts.sync.values(), [
     path.join(staticDir, 'sync-rel.js'),
     '/sync-abs.js',
   ]);
-  t.deepEqual(yaml.scripts.async.values(), [
+  t.deepEqual(scripts.async.values(), [
     path.join(staticDir, 'async-rel.js'),
     '/async-abs.js',
   ]);
 
-  t.deepEqual(yaml.yaml, {
+
+  // Content
+  t.deepEqual(content, '<h1>Example HTML</h1>\n\n## Example Markdown');
+
+  // Yaml
+  t.deepEqual(rawYaml, {
     hello: {
       world: [
         'I\'m an example',
@@ -116,10 +117,7 @@ test('should generate example template', async (t) => {
       ],
     },
     partials: [
-      './extra-files/partials-example-nested-import.tmpl',
+      './example-partial.tmpl',
     ],
   });
-
-  // Content
-  t.deepEqual(rawText, '<h1>Example HTML</h1>\n\n## Example Markdown');
 });
