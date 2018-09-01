@@ -88,6 +88,7 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): TempBun
 
   if (rawYaml['partials'] && Array.isArray(rawYaml['partials'])) {
     for (const p of rawYaml['partials']) {
+      // TODO: Check if the partial actually exists
       if (typeof p === 'string') {
         const absPath = path.resolve(relativePath, p);
         partials[p] = absPath;
