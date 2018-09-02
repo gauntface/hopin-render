@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@hopin/logger": "0.0.4",
-    "@hopin/markdown": "0.0.2",
+    "@hopin/markdown": "0.0.3",
     "gray-matter": "^4.0.1",
     "handlebars": "^4.0.11"
   },
