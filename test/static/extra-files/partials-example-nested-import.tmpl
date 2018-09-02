@@ -1,0 +1,28 @@
+---
+hello: world 3
+styles:
+  inline:
+    - ./styles/inline-3.css
+  sync:
+    - ./styles/sync-3.css
+  async:
+    - ./styles/async-3.css
+scripts:
+  inline:
+    - ./scripts/inline-3.js
+    - inline-3.2:
+      src: ./scripts/inline-3.2.js
+      type: nomodule
+    - inline-3.3:
+        src: ./scripts/inline-3.3.js
+        type: module
+  sync:
+    - ./scripts/sync-3.js
+  async:
+    - ./scripts/async-3.js
+---
+<h3>HTML</h3>
+### MD
+
+{{ yaml.hello }}
+{{ data.hello }}

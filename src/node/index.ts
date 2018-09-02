@@ -1,26 +1,41 @@
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import {createBundle, createBundleFromFile, Bundle} from './create-bundle';
+import {renderBundle} from './render-bundle';
+import { StylesAssetGroup } from './models/styles-assets-groups';
+import { ScriptsAssetGroup } from './models/scripts-assets-groups';
 
-import {logger} from "./utils/logger";
-import { generateTemplate, Template } from "./Template";
-
-export function compile(template: string, relativePath?: string): Promise<Template> {
-  return generateTemplate(template, relativePath);
+export async function createTemplate(rawInput: string, relativePath?: string): Promise<HopinTemplate> {
+  if (!relativePath) {
+    relativePath = process.cwd();
+  }
+  const bundle = await createBundle(rawInput, relativePath);
+  return new HopinTemplate(bundle);
 }
 
-export async function compileFile(filePath: string): Promise<Template> {
-  let fullPath = filePath;
-  if (!path.isAbsolute(filePath)) {
-    fullPath = path.resolve(filePath);
+export async function createTemplateFromFile(filePath: string): Promise<HopinTemplate> {
+  const bundle = await createBundleFromFile(filePath);
+  return new HopinTemplate(bundle);
+}
+
+export class HopinTemplate {
+  private bundle: Bundle;
+
+  constructor(bundle: Bundle) {
+    this.bundle = bundle;
   }
 
-  try {
-    await fs.access(fullPath);
-  } catch(err) {
-    logger.error(`Unable to access '${filePath}'`);
-    throw err;
+  get styles(): StylesAssetGroup {
+    return this.bundle.styles;
   }
 
-  const fileContents = await fs.readFile(fullPath);
-  return generateTemplate(fileContents.toString(), path.dirname(fullPath));
+  get scripts(): ScriptsAssetGroup {
+    return this.bundle.scripts;
+  }
+
+  get yaml(): {} {
+    return this.bundle.template.yaml;
+  }
+
+  render(data: {}) {
+    return renderBundle(this.bundle, data);
+  }
 }

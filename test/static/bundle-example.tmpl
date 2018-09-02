@@ -1,0 +1,33 @@
+---
+hello: world 1
+styles:
+  inline:
+    - ./extra-files/styles/inline-1.css
+  sync:
+    - ./extra-files/styles/sync-1.css
+  async:
+    - ./extra-files/styles/async-1.css
+scripts:
+  inline:
+    - ./extra-files/scripts/inline-1.js
+    - inline-1.2:
+      src: ./extra-files/scripts/inline-1.2.js
+      type: nomodule
+    - inline-1.3:
+        src: ./extra-files/scripts/inline-1.3.js
+        type: module
+  sync:
+    - ./extra-files/scripts/sync-1.js
+  async:
+    - ./extra-files/scripts/async-1.js
+partials:
+  - ./extra-files/partials-example-import.tmpl
+---
+
+<h1>HTML</h1>
+# MD
+
+{{ yaml.hello }}
+{{ data.hello }}
+
+{{> ./extra-files/partials-example-import.tmpl}}
