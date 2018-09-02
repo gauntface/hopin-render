@@ -1,12 +1,11 @@
 ---
-hello: world 2
 styles:
   inline:
     - ./styles/inline-2.css
   sync:
-    - ./styles/sync-2.css
+    - /styles/sync-2.css
   async:
-    - ./styles/async-2.css
+    - /styles/async-2.css
 scripts:
   inline:
     - ./scripts/inline-2.js
@@ -18,16 +17,9 @@ scripts:
         src: ./scripts/inline-2.3.js
         type: module
   sync:
-    - ./scripts/sync-2.js
+    - /scripts/sync-2.js
+    - /scripts/sync-2.mjs
   async:
-    - ./scripts/async-2.js
-partials:
-  - ./partials-example-nested-import.tmpl
+    - /scripts/async-2.js
+    - /scripts/async-2.mjs
 ---
-<h2>HTML</h2>
-## MD
-
-{{ yaml.hello }}
-{{ data.hello }}
-
-{{> ./partials-example-nested-import.tmpl}}

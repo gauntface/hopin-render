@@ -1,11 +1,12 @@
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import * as matter from 'gray-matter';
 
 import { OrderedSet } from './models/ordered-set';
 import {StylesAssetGroup} from './models/styles-assets-groups';
 import {ScriptsAssetGroup} from './models/scripts-assets-groups';
 
-export function parseYaml(rawYamlAndText: string, relativePath: string): TempBundle {
+export async function parseYaml(rawYamlAndText: string, relativePath: string): Promise<TempBundle> {
   // TODO: Add some error logging for bad inputs
   // TODO: Add a strict mode?
 
@@ -23,23 +24,22 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): TempBun
       for (const s of rawYaml['styles'].inline) {
         if (typeof s === 'string') {
           const absPath = path.resolve(relativePath, s);
-          styles.inline.add(absPath, absPath);
+          const buffer = await fs.readFile(absPath);
+          styles.inline.add(absPath, buffer.toString());
         }
       }
     }
     if (rawYaml['styles'].sync && Array.isArray(rawYaml['styles'].sync)) {
       for (const s of rawYaml['styles'].sync) {
         if (typeof s === 'string') {
-          const absPath = path.resolve(relativePath, s);
-          styles.sync.add(absPath, absPath);
+          styles.sync.add(s, s);
         }
       }
     }
     if (rawYaml['styles'].async && Array.isArray(rawYaml['styles'].async)) {
       for (const s of rawYaml['styles'].async) {
         if (typeof s === 'string') {
-          const absPath = path.resolve(relativePath, s);
-          styles.async.add(absPath, absPath);
+          styles.async.add(s, s);
         }
       }
     }
@@ -50,9 +50,10 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): TempBun
       for (let s of rawYaml['scripts'].inline) {
         if (typeof s === 'string') {
           const absPath = path.resolve(relativePath, s);
+          const buffer = await fs.readFile(absPath);
           scripts.inline.add(absPath, {
-            src: absPath,
-            type: 'nomodule',
+            src: buffer.toString(),
+            type: path.extname(absPath) === '.mjs' ? 'module' : 'nomodule',
           });
         } else if (typeof s === 'object') {
           if (Object.keys(s).length === 1) {
@@ -60,8 +61,9 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): TempBun
           }
           if (s.src && s.type) {
             const absPath = path.resolve(relativePath, s.src);
+            const buffer = await fs.readFile(absPath);
             scripts.inline.add(absPath, {
-              src: absPath,
+              src: buffer.toString(),
               type: s.type,
             });
           }
@@ -71,16 +73,14 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): TempBun
     if (rawYaml['scripts'].sync && Array.isArray(rawYaml['scripts'].sync)) {
       for (const s of rawYaml['scripts'].sync) {
         if (typeof s === 'string') {
-          const absPath = path.resolve(relativePath, s);
-          scripts.sync.add(absPath, absPath);
+          scripts.sync.add(s, s);
         }
       }
     }
     if (rawYaml['scripts'].async && Array.isArray(rawYaml['scripts'].async)) {
       for (const s of rawYaml['scripts'].async) {
         if (typeof s === 'string') {
-          const absPath = path.resolve(relativePath, s);
-          scripts.async.add(absPath, absPath);
+          scripts.async.add(s, s);
         }
       }
     }

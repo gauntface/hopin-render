@@ -1,12 +1,11 @@
 ---
-hello: world 1
 styles:
   inline:
     - ./extra-files/styles/inline-1.css
   sync:
-    - ./extra-files/styles/sync-1.css
+    - /styles/sync-1.css
   async:
-    - ./extra-files/styles/async-1.css
+    - /styles/async-1.css
 scripts:
   inline:
     - ./extra-files/scripts/inline-1.js
@@ -18,17 +17,16 @@ scripts:
         src: ./extra-files/scripts/inline-1.3.js
         type: module
   sync:
-    - ./extra-files/scripts/sync-1.js
+    - /scripts/sync-1.js
+    - /scripts/sync-1.mjs
   async:
-    - ./extra-files/scripts/async-1.js
+    - /scripts/async-1.js
+    - /scripts/async-1.mjs
 partials:
-  - ./extra-files/partials-example-import.tmpl
+  - ./extra-files/helpers-partial.tmpl
 ---
+{{> ./extra-files/helpers-partial.tmpl}}
 
-<h1>HTML</h1>
-# MD
+{{hopin_headAssets}}
 
-{{ yaml.hello }}
-{{ data.hello }}
-
-{{> ./extra-files/partials-example-import.tmpl}}
+{{hopin_bodyAssets}}

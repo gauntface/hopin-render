@@ -17,43 +17,42 @@ test('should generate example yaml', async (t) => {
 
   // Styles
   t.deepEqual(styles.inline.values(), [
-    path.join(staticDir, 'inline-rel.css'),
-    '/inline-abs.css'
+    '.inline1{}',
   ]);
   t.deepEqual(styles.sync.values(), [
-    path.join(staticDir, 'sync-rel.css'),
+    './sync-rel.css',
     '/sync-abs.css'
   ]);
   t.deepEqual(styles.async.values(), [
-    path.join(staticDir, 'async-rel.css'),
+    './async-rel.css',
     '/async-abs.css'
   ]);
 
   // Scripts
   t.deepEqual(scripts.inline.values(), [
     {
-      src: path.join(staticDir, 'inline-rel.js'),
+      src: 'console.log(\'inline-1.js\');',
       type: 'nomodule',
     },
     {
-      src: '/inline-abs.js',
+      src: 'console.log(\'inline-1.mjs\');',
+      type: 'module',
+    },
+    {
+      src: 'console.log(\'inline-1.2.js\');',
       type: 'nomodule',
     },
     {
-      src: path.join(staticDir, 'inline-2-rel.js'),
-      type: 'nomodule',
-    },
-    {
-      src: '/inline-3-abs.js',
+      src: 'console.log(\'inline-1.3.js\');',
       type: 'module',
     },
   ]);
   t.deepEqual(scripts.sync.values(), [
-    path.join(staticDir, 'sync-rel.js'),
+    './sync-rel.js',
     '/sync-abs.js',
   ]);
   t.deepEqual(scripts.async.values(), [
-    path.join(staticDir, 'async-rel.js'),
+    './async-rel.js',
     '/async-abs.js',
   ]);
 
@@ -79,8 +78,7 @@ test('should generate example yaml', async (t) => {
     },
     styles: {
       inline: [
-        './inline-rel.css',
-        '/inline-abs.css',
+        './extra-files/styles/inline-1.css',
       ],
       sync: [
         './sync-rel.css',
@@ -93,16 +91,16 @@ test('should generate example yaml', async (t) => {
     },
     scripts: {
       inline: [
-        './inline-rel.js',
-        '/inline-abs.js',
+        './extra-files/scripts/inline-1.js',
+        './extra-files/scripts/inline-1.mjs',
         {
           'inline-2': null,
-          src: './inline-2-rel.js',
+          src: './extra-files/scripts/inline-1.2.js',
           type: 'nomodule',
         },
         {
           'inline-3': {
-            src: '/inline-3-abs.js',
+            src: './extra-files/scripts/inline-1.3.js',
             type: 'module',
           },
         },
