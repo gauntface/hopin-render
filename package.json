@@ -71,5 +71,5 @@
   "license": "Apache-2.0",
   "main": "./dist/commonjs/index.js",
   "typings": "./dist/commonjs/index.d.ts",
-  "version": "2.0.0"
+  "version": "3.0.0"
 }
