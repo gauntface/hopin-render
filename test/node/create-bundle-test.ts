@@ -17,72 +17,72 @@ test('should generate bundle', async (t) => {
   // Scripts
   t.deepEqual(bundle.scripts.inline.values(), [
     {
-      src: path.join(scriptsDir, 'inline-1.js'),
+      src: `console.log('inline-1.js');`,
       type: 'nomodule',
     },
     {
-      src:path.join(scriptsDir, 'inline-1.2.js'),
-      type: 'nomodule',
-    },
-    {
-      src: path.join(scriptsDir, 'inline-1.3.js'),
+      src: `console.log('inline-1.mjs');`,
       type: 'module',
     },
     {
-      src: path.join(scriptsDir, 'inline-2.js'),
+      src: `console.log('inline-1.2.js');`,
       type: 'nomodule',
     },
     {
-      src: path.join(scriptsDir, 'inline-2.2.js'),
-      type: 'nomodule',
-    },
-    {
-      src: path.join(scriptsDir, 'inline-2.3.js'),
+      src: `console.log('inline-1.3.js');`,
       type: 'module',
     },
     {
-      src: path.join(scriptsDir, 'inline-3.js'),
+      src: `console.log('inline-2.js');`,
       type: 'nomodule',
     },
     {
-      src: path.join(scriptsDir, 'inline-3.2.js'),
-      type: 'nomodule',
-    },
-    {
-      src: path.join(scriptsDir, 'inline-3.3.js'),
+      src: `console.log('inline-2.mjs');`,
       type: 'module',
+    },
+    {
+      src: `console.log('inline-2.2.js');`,
+      type: 'nomodule',
+    },
+    {
+      src: `console.log('inline-2.3.js');`,
+      type: 'module',
+    },
+    {
+      src: `console.log('inline-3.js');`,
+      type: 'nomodule',
     },
   ]);
 
   t.deepEqual(bundle.scripts.sync.values(), [
-    path.join(scriptsDir, 'sync-1.js'),
-    path.join(scriptsDir, 'sync-2.js'),
-    path.join(scriptsDir, 'sync-3.js'),
+    './extra-files/scripts/sync-1.js',
+    './scripts/sync-2.js',
+    './scripts/sync-3.js',
   ]);
 
   t.deepEqual(bundle.scripts.async.values(), [
-    path.join(scriptsDir, 'async-1.js'),
-    path.join(scriptsDir, 'async-2.js'),
-    path.join(scriptsDir, 'async-3.js'),
+    './extra-files/scripts/async-1.js',
+    './scripts/async-2.js',
+    './scripts/async-3.js',
   ]);
 
   // Styles
   t.deepEqual(bundle.styles.inline.values(), [
-    path.join(stylesDir, 'inline-1.css'),
-    path.join(stylesDir, 'inline-2.css'),
-    path.join(stylesDir, 'inline-3.css'),
+    '.inline1{}',
+    '.inline2{}',
+    '.inline3{}',
   ]);
 
   t.deepEqual(bundle.styles.sync.values(), [
-    path.join(stylesDir, 'sync-1.css'),
-    path.join(stylesDir, 'sync-2.css'),
-    path.join(stylesDir, 'sync-3.css'),
+    './extra-files/styles/sync-1.css',
+    './styles/sync-2.css',
+    './styles/sync-3.css',
   ]);
 
   t.deepEqual(bundle.styles.async.values(), [
-    path.join(stylesDir, 'async-1.css'),
-    path.join(stylesDir, 'async-2.css'),
-    path.join(stylesDir, 'async-3.css'),
+    './extra-files/styles/async-1.css',
+    './styles/async-2.css',
+    './styles/async-3.css',
   ]);
 
   // tslint:disable-next-line:no-any

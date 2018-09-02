@@ -33,7 +33,7 @@ async function parseFile(rawYamlAndText: string, relativePath: string): Promise<
   const styles = new StylesAssetGroup();
   const scripts = new ScriptsAssetGroup();
 
-  const tmpBundle = parseYaml(rawYamlAndText, relativePath);
+  const tmpBundle = await parseYaml(rawYamlAndText, relativePath);
   styles.add(tmpBundle.styles);
   scripts.add(tmpBundle.scripts);
 

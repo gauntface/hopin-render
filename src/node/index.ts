@@ -35,7 +35,7 @@ export class HopinTemplate {
     return this.bundle.template.yaml;
   }
 
-  render(data: {}) {
+  render(data?: {}) {
     return renderBundle(this.bundle, data);
   }
 }

@@ -10,8 +10,7 @@ data:
       - Nesting array 2
 styles:
   inline:
-    - ./inline-rel.css
-    - /inline-abs.css
+    - ./extra-files/styles/inline-1.css
   sync:
     - ./sync-rel.css
     - /sync-abs.css
@@ -20,13 +19,13 @@ styles:
     - /async-abs.css
 scripts:
   inline:
-    - ./inline-rel.js
-    - /inline-abs.js
+    - ./extra-files/scripts/inline-1.js
+    - ./extra-files/scripts/inline-1.mjs
     - inline-2:
-      src: ./inline-2-rel.js
+      src: ./extra-files/scripts/inline-1.2.js
       type: nomodule
     - inline-3:
-        src: /inline-3-abs.js
+        src: ./extra-files/scripts/inline-1.3.js
         type: module
   sync:
     - ./sync-rel.js

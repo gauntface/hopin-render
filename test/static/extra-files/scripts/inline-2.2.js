@@ -1,0 +1,1 @@
+console.log('inline-2.2.js');
