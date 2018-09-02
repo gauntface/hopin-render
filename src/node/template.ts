@@ -44,5 +44,5 @@ export class Template {
 }
 
 type RenderOpts = {
-  helpers?: {[key: string]: Function}
+  helpers?: {[key: string]: () => any}
 };
