@@ -44,5 +44,6 @@ export class Template {
 }
 
 type RenderOpts = {
+  // tslint:disable-next-line:no-any
   helpers?: {[key: string]: () => any}
 };
