@@ -19,20 +19,20 @@ export async function createTemplateFromFile(filePath: string): Promise<HopinTem
 export class HopinTemplate {
   private bundle: Bundle;
 
-  constructor(bundle) {
+  constructor(bundle: Bundle) {
     this.bundle = bundle;
   }
 
   get styles(): StylesAssetGroup {
-    return this.bundle.styles
+    return this.bundle.styles;
   }
 
   get scripts(): ScriptsAssetGroup {
-    return this.bundle.scripts
+    return this.bundle.scripts;
   }
 
   get yaml(): {} {
-    return this.bundle.template.yaml
+    return this.bundle.template.yaml;
   }
 
   render(data: {}) {
