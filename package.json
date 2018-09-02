@@ -69,7 +69,7 @@
   "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
   "author": "gauntface",
   "license": "Apache-2.0",
-  "main": "./dist/commonjs/index.js",
-  "typings": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/node/index.js",
+  "typings": "./dist/commonjs/node/index.d.ts",
   "version": "3.0.0"
 }
