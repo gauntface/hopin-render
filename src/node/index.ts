@@ -1,5 +1,7 @@
 import {createBundle, createBundleFromFile, Bundle} from './create-bundle';
 import {renderBundle} from './render-bundle';
+import { StylesAssetGroup } from './models/styles-assets-groups';
+import { ScriptsAssetGroup } from './models/scripts-assets-groups';
 
 export async function createTemplate(rawInput: string, relativePath?: string): Promise<HopinTemplate> {
   if (!relativePath) {
@@ -19,6 +21,18 @@ export class HopinTemplate {
 
   constructor(bundle) {
     this.bundle = bundle;
+  }
+
+  get styles(): StylesAssetGroup {
+    return this.bundle.styles
+  }
+
+  get scripts(): ScriptsAssetGroup {
+    return this.bundle.scripts
+  }
+
+  get yaml(): {} {
+    return this.bundle.template.yaml
   }
 
   render(data: {}) {
