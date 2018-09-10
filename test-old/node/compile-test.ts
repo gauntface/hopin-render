@@ -3,7 +3,6 @@ import * as sinon from 'sinon';
 import * as path from 'path';
 import {EOL} from 'os';
 import {compile} from '../../src/node/index';
-import {logger} from '../../src/node/utils/logger';
 
 test.beforeEach((t) => {
   t.context.sandbox = sinon.createSandbox();

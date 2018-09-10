@@ -2,8 +2,9 @@ import {test} from 'ava';
 import * as sinon from 'sinon';
 import * as path from 'path';
 import {EOL} from 'os';
+import {logger} from '@hopin/logger';
+
 import {compileFile} from '../../src/node/index';
-import { logger } from '../../src/node/utils/logger';
 
 test.beforeEach((t) => {
   t.context.sandbox = sinon.createSandbox();

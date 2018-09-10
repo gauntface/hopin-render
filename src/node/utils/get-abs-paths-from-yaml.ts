@@ -1,7 +1,6 @@
 import * as path from 'path';
 import {EOL} from 'os';
-
-import {logger} from '../utils/logger';
+import {logger} from '@hopin/logger';
 
 export async function getAbsPathsFromYaml(files: string[], relativePath: string, yamlProperty: string): Promise<string[]> {
   if (!Array.isArray(files)) {

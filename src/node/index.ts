@@ -1,7 +1,11 @@
+import {logger} from '@hopin/logger';
+
 import {createBundle, createBundleFromFile, Bundle} from './create-bundle';
 import {renderBundle} from './render-bundle';
 import { StylesAssetGroup } from './models/styles-assets-groups';
 import { ScriptsAssetGroup } from './models/scripts-assets-groups';
+
+logger.setPrefix('[@hopin/render]');
 
 export async function createTemplate(rawInput: string, relativePath?: string): Promise<HopinTemplate> {
   if (!relativePath) {
