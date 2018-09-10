@@ -18,7 +18,7 @@ gulp.task('clean',
 gulp.task('build',
   gulp.series(
     'clean',
-    // Node build
+    // Node build (TRY --skipLibCheck)
     tsNode.gulpBuild(),
   )
 );
