@@ -1,8 +1,8 @@
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import {test} from 'ava';
+const fs = require('fs-extra');
+const path = require('path');
+const {test} = require('ava');
 
-import {parseYaml} from '../../src/node/parse-yaml';
+const {parseYaml} = require('../../build/parse-yaml');
 
 const staticDir = path.join(__dirname, '..', 'static');
 

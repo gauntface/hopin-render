@@ -1,9 +1,9 @@
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import {test} from 'ava';
+const fs = require('fs-extra');
+const path = require('path');
+const {test} = require('ava');
 
-import { createBundle } from '../../src/node/create-bundle';
-import { renderBundle } from '../../src/node/render-bundle';
+const { createBundle } = require('../../build/create-bundle');
+const { renderBundle } = require('../../build/render-bundle');
 
 const staticDir = path.join(__dirname, '..', 'static');
 

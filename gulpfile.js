@@ -1,36 +1,26 @@
 const gulp = require('gulp');
 const path = require('path');
+const fs = require('fs-extra');
+const {setConfig} = require('@hopin/wbt-config');
+const tsNode = require('@hopin/wbt-ts-node');
 
-const getTaskFilepaths = require('./gulp-tasks/utils/get-task-filepaths');
+const src = path.join(__dirname, 'src');
+const dst = path.join(__dirname, 'build');
 
-global.__buildConfig = {
-  src: path.join(__dirname, 'src'),
-  dest: path.join(__dirname, 'dist'),
-  temp: path.join(__dirname, 'build'),
-};
+setConfig(src, dst);
 
-const loadTasks = () => {
-  const taskFiles = getTaskFilepaths();
-  for (const taskFilepath of taskFiles) {
-    const {task} = require(taskFilepath);
-    if (task) {
-      gulp.task(task);
-    }
-  }
-};
+gulp.task('clean',
+  gulp.parallel(
+    () => fs.remove(dst),
+  )
+)
 
-loadTasks();
-
-gulp.task('dev', (done) => {
-  return gulp.series([
-    'build',
-  ])(done);
-});
-
-gulp.task('prod', (done) => {
-  process.env.NODE_ENV = 'production';
-
-  return gulp.series([
-    'build',
-  ])(done);
-});
+gulp.task('build',
+  gulp.series(
+    'clean',
+    // Node build (TRY --skipLibCheck)
+    tsNode.gulpBuild({
+      flags: ['--skipLibCheck'],
+    }),
+  )
+);

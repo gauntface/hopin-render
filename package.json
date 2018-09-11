@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "ava": "npm run build && nyc ava ./build/test/{node,integration}/**/*.js",
+    "ava": "npm run build && nyc ava ./test/{node,integration}/**/*.js",
     "build": "gulp build",
     "docs": "typedoc ./src/**/*.ts --out ./docs/ --mode file --excludePrivate --excludeProtected --module umd --ignoreCompilerErrors",
     "lint": "tslint 'src/**/*'",
@@ -23,6 +23,7 @@
     ]
   },
   "devDependencies": {
+    "@hopin/wbt-ts-node": "0.0.14",
     "@types/fs-extra": "5.0.4",
     "@types/sinon": "5.0.1",
     "ava": "0.25.0",

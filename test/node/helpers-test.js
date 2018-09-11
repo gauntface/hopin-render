@@ -1,10 +1,9 @@
-import * as path from 'path';
-import {test} from 'ava';
+const path = require('path');
+const {test} = require('ava');
 
-import { createTemplateFromFile } from '../../src/node';
+const { createTemplateFromFile } = require('../../build');
 
 const staticDir = path.join(__dirname, '..', 'static');
-const extraDir = path.join(staticDir, 'extra-files');
 
 test('should render with helpers', async (t) => {
   const template = await createTemplateFromFile(path.join(staticDir, 'helpers-example.tmpl'));
