@@ -19,6 +19,8 @@ gulp.task('build',
   gulp.series(
     'clean',
     // Node build (TRY --skipLibCheck)
-    tsNode.gulpBuild(),
+    tsNode.gulpBuild({
+      flags: ['--skipLibCheck'],
+    }),
   )
 );
