@@ -1,6 +1,7 @@
 import * as handlebars from 'handlebars';
 import {Partial} from './create-bundle';
 import { OrderedSet } from './models/ordered-set';
+import { RenderOpts } from '.';
 
 export class Template {
   content: string;
@@ -13,29 +14,32 @@ export class Template {
     this.yaml = yaml;
   }
 
-  async render(data: {} = {}, opts: RenderOpts = {}): Promise<string> {
-    const handlebarsInstance = await this.getHandlebars(data);
+  async render(opts: RenderOpts = {}, internalOpts: InternalRenderOpts = {}): Promise<string> {
+    const handlebarsInstance = await this.getHandlebars(opts);
 
-    if (opts.helpers) {
+    if (internalOpts.helpers) {
       // Register additional template helpers
-      for (const helperName of Object.keys(opts.helpers)) {
-        handlebarsInstance.registerHelper(helperName, opts.helpers[helperName]);
+      for (const helperName of Object.keys(internalOpts.helpers)) {
+        handlebarsInstance.registerHelper(helperName, internalOpts.helpers[helperName]);
       }
     }
 
     const handlebarsTemplate = handlebarsInstance.compile(this.content);
-    return handlebarsTemplate({
-      yaml: this.yaml,
-      data,
-    });
+
+    let topLevel = {};
+    if (opts.topLevel) {
+      topLevel = opts.topLevel;
+    }
+    const mergedTemplateData = Object.assign(topLevel, {yaml: this.yaml, data: opts.data});
+    return handlebarsTemplate(mergedTemplateData);
   }
 
-  async getHandlebars(data?: {}): Promise<typeof handlebars> {
+  async getHandlebars(opts: RenderOpts): Promise<typeof handlebars> {
     const handlebarsInstance = handlebars.create();
   
     // Register partials
     for (const partial of this.partials.values()) {
-      const renderedPartial = await partial.template.render(data);
+      const renderedPartial = await partial.template.render(opts);
       handlebarsInstance.registerPartial(partial.id, renderedPartial);
     }
 
@@ -43,7 +47,7 @@ export class Template {
   }
 }
 
-type RenderOpts = {
+type InternalRenderOpts = {
   // tslint:disable-next-line:no-any
   helpers?: {[key: string]: () => any}
 };

@@ -83,7 +83,7 @@ test('should generate bundle', async (t) => {
 
   t.deepEqual((bundle.template.yaml)['hello'], 'world 1');
 
-  t.deepEqual(bundle.template.content, '<h1>HTML</h1>\n# MD\n\n{{ yaml.hello }}\n{{ data.hello }}\n\n{{> ./extra-files/partials-example-import.tmpl}}');
+  t.deepEqual(bundle.template.content, '<h1>HTML</h1>\n# MD\n\n{{ yaml.hello }}\n{{ data.hello }}\n{{ topLevelExample }}\n\n{{> ./extra-files/partials-example-import.tmpl}}');
 
   const childTemplatesOne = bundle.template.partials.values();
   t.deepEqual(childTemplatesOne.length, 1);
