@@ -46,7 +46,7 @@
     "render"
   ],
   "files": [
-    "dist/**/*"
+    "build/**/*"
   ],
   "homepage": "https://github.com/gauntface/hopin-render#readme",
   "repository": {
@@ -60,7 +60,7 @@
   "description": "Module to render HTML, CSS and JS in a \"best practice-y\" way.",
   "author": "gauntface",
   "license": "Apache-2.0",
-  "main": "./dist/commonjs/node/index.js",
-  "typings": "./dist/commonjs/node/index.d.ts",
+  "main": "./build/index.js",
+  "typings": "./build/index.d.ts",
   "version": "3.0.3"
 }
