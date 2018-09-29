@@ -2,6 +2,7 @@ import * as handlebars from 'handlebars';
 import {Partial} from './create-bundle';
 import { OrderedSet } from './models/ordered-set';
 import { RenderOpts } from '.';
+import {limitArray} from './helpers/limit-array';
 
 export class Template {
   content: string;
@@ -23,6 +24,9 @@ export class Template {
         handlebarsInstance.registerHelper(helperName, internalOpts.helpers[helperName]);
       }
     }
+
+    // Common helpers
+    handlebarsInstance.registerHelper('hopin_limitArray', limitArray);
 
     const handlebarsTemplate = handlebarsInstance.compile(this.content);
 
@@ -49,5 +53,5 @@ export class Template {
 
 type InternalRenderOpts = {
   // tslint:disable-next-line:no-any
-  helpers?: {[key: string]: () => any}
+  helpers?: {[key: string]: (...args: Array<any>) => any}
 };
