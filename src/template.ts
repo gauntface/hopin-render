@@ -40,7 +40,7 @@ export class Template {
 
   async getHandlebars(opts: RenderOpts): Promise<typeof handlebars> {
     const handlebarsInstance = handlebars.create();
-  
+
     // Register partials
     for (const partial of this.partials.values()) {
       const renderedPartial = await partial.template.render(opts);
@@ -53,5 +53,5 @@ export class Template {
 
 type InternalRenderOpts = {
   // tslint:disable-next-line:no-any
-  helpers?: {[key: string]: (...args: Array<any>) => any}
+  helpers?: {[key: string]: (...args: any[]) => any}
 };
