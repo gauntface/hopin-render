@@ -19,6 +19,21 @@ class OrderedSet<T> {
     this.vals[key] = value;
   }
 
+  prepend(key: string, value: T) {
+    if (this.orderedSet.has(key)) {
+      return;
+    }
+
+    const newSet = new Set<string>();
+    newSet.add(key);
+    for (const k of Array.from(this.orderedSet)) {
+      newSet.add(k);
+    }
+
+    this.orderedSet = newSet;
+    this.vals[key] = value;
+  }
+
   addSet(newSet: OrderedSet<T>) {
     for (const v of newSet.data()) {
       this.add(v.path, v.value);
