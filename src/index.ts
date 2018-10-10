@@ -7,6 +7,11 @@ import { ScriptsAssetGroup } from './models/scripts-assets-groups';
 
 logger.setPrefix('[@hopin/render]');
 
+export type RenderOpts = {
+  topLevel?: {}
+  data?: {}
+};
+
 export async function createTemplate(rawInput: string, relativePath?: string): Promise<HopinTemplate> {
   if (!relativePath) {
     relativePath = process.cwd();
@@ -39,7 +44,7 @@ export class HopinTemplate {
     return this.bundle.template.yaml;
   }
 
-  render(data?: {}) {
-    return renderBundle(this.bundle, data);
+  render(opts: RenderOpts = {}) {
+    return renderBundle(this.bundle, opts);
   }
 }

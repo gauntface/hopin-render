@@ -34,13 +34,13 @@ async function parseFile(rawYamlAndText: string, relativePath: string): Promise<
   const scripts = new ScriptsAssetGroup();
 
   const tmpBundle = await parseYaml(rawYamlAndText, relativePath);
-  styles.add(tmpBundle.styles);
+  styles.append(tmpBundle.styles);
   scripts.add(tmpBundle.scripts);
 
   for (const partialKey of Object.keys(tmpBundle.partials)) {
     const partialBundle = await createBundleFromFile(tmpBundle.partials[partialKey]);    
     partials.add(partialKey, {id: partialKey, template: partialBundle.template});
-    styles.add(partialBundle.styles);
+    styles.append(partialBundle.styles);
     scripts.add(partialBundle.scripts);
   }
 
