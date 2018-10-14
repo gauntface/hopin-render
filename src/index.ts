@@ -1,4 +1,5 @@
 import {logger} from '@hopin/logger';
+import * as path from 'path';
 
 import {createBundle, createBundleFromFile, Bundle} from './create-bundle';
 import {renderBundle} from './render-bundle';
