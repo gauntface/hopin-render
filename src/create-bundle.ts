@@ -13,11 +13,7 @@ export async function createBundleFromFile(filePath: string): Promise<Bundle> {
     fullPath = path.resolve(filePath);
   }
 
-  try {
-    await fs.access(fullPath);
-  } catch(err) {
-    throw err;
-  }
+  await fs.access(fullPath);
 
   const fileContents = await fs.readFile(fullPath);
   return createBundle(fileContents.toString(), path.dirname(fullPath));

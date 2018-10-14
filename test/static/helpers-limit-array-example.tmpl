@@ -1,0 +1,17 @@
+---
+example:
+  - First Item
+  - Second Item
+exapleText: "This is a string"
+---
+{{#each (hopin_limitArray yaml.example 3)}}
+{{this}}
+{{/each}}
+
+{{#each (hopin_limitArray yaml.example 1)}}
+{{this}}
+{{/each}}
+
+{{#each (hopin_limitArray yaml.exapleText 1)}}
+{{this}}
+{{/each}}

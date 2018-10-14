@@ -42,3 +42,14 @@ document.head.appendChild(lT);
 });
 </script>`);
 });
+
+test('should render with helpers', async (t) => {
+  const template = await createTemplateFromFile(path.join(staticDir, 'helpers-limit-array-example.tmpl'));
+  const html = await template.render();
+  t.deepEqual(html,`First Item
+Second Item
+
+First Item
+
+`);
+});
