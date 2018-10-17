@@ -1,12 +1,9 @@
-import {logger} from '@hopin/logger';
 import * as path from 'path';
 
 import {createBundle, createBundleFromFile, Bundle} from './create-bundle';
 import {renderBundle} from './render-bundle';
 import { StylesAssetGroup } from './models/styles-assets-groups';
 import { ScriptsAssetGroup } from './models/scripts-assets-groups';
-
-logger.setPrefix('[@hopin/render]');
 
 export type RenderOpts = {
   topLevel?: {}
@@ -45,7 +42,7 @@ export class HopinTemplate {
     return this.bundle.template.yaml;
   }
 
-  render(opts: RenderOpts = {}) {
+  render(opts?: RenderOpts) {
     return renderBundle(this.bundle, opts);
   }
 }

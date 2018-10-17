@@ -19,7 +19,7 @@
       "html"
     ],
     "exclude": [
-      "build/test/**/*"
+      "test/**/*"
     ]
   },
   "devDependencies": {
@@ -37,7 +37,7 @@
     "typedoc": "0.13.0"
   },
   "dependencies": {
-    "@hopin/logger": "1.0.2",
+    "@hopin/logger": "2.0.0",
     "gray-matter": "^4.0.1",
     "handlebars": "^4.0.11"
   },
