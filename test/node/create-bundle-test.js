@@ -9,7 +9,7 @@ const staticDir = path.join(__dirname, '..', 'static');
 test('should generate bundle', async (t) => {
   const rawInput = await fs.readFile(path.join(staticDir, 'bundle-example.tmpl'));
   const bundle = await createBundle(rawInput.toString(), staticDir);
-  
+
   // Scripts
   t.deepEqual(bundle.scripts.inline.values(), [
     {
@@ -105,10 +105,10 @@ test('should generate bundle', async (t) => {
 test('should be able to prepend to bundle styles and scripts', async (t) => {
   const bundleRawInput = await fs.readFile(path.join(staticDir, 'bundle-example.tmpl'));
   const helpersRawInput = await fs.readFile(path.join(staticDir, 'helpers-example.tmpl'));
-  
+
   const bundle = await createBundle(bundleRawInput.toString(), staticDir);
   const helpersBundle = await createBundle(helpersRawInput.toString(), staticDir);
-  
+
   bundle.styles.prepend(helpersBundle.styles);
 
   // Scripts
