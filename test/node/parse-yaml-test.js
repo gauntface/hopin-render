@@ -9,7 +9,7 @@ const staticDir = path.join(__dirname, '..', 'static');
 test('should generate example yaml', async (t) => {
   const rawInput = await fs.readFile(path.join(staticDir, 'yaml-example.tmpl'));
   const {styles, scripts, partials, content, rawYaml} = await parseYaml(rawInput.toString(), staticDir);
-  
+
   // Partials
   t.deepEqual(partials, {
     './example-partial.tmpl': path.join(staticDir, 'example-partial.tmpl'),
@@ -117,5 +117,127 @@ test('should generate example yaml', async (t) => {
     partials: [
       './example-partial.tmpl',
     ],
+  });
+});
+
+test('should handle styles and scripts without inline, sync and async fields', async (t) => {
+  const yamlInput = `---
+styles:
+  bad: styles
+scripts:
+  bad: scripts
+---
+`;
+  const {styles, scripts, partials, content, rawYaml} = await parseYaml(yamlInput, staticDir);
+
+  // Partials
+  t.deepEqual(partials, {});
+
+  // Styles
+  t.deepEqual(styles.inline.values(), []);
+  t.deepEqual(styles.sync.values(), []);
+  t.deepEqual(styles.async.values(), []);
+
+  // Scripts
+  t.deepEqual(scripts.inline.values(), []);
+  t.deepEqual(scripts.sync.values(), []);
+  t.deepEqual(scripts.async.values(), []);
+
+
+  // Content
+  t.deepEqual(content, '');
+
+  // Yaml
+  t.deepEqual(rawYaml, {
+    styles: {
+      bad: 'styles',
+    },
+    scripts: {
+      bad: 'scripts',
+    },
+  });
+});
+
+test('should handle styles and scripts with non strings in array for inline, sync and async fields', async (t) => {
+  const yamlInput = `---
+styles:
+  inline:
+    - bad: inline
+  sync:
+    - bad: sync
+  async:
+    - bad: async
+scripts:
+  inline:
+    - bad: inline
+  sync:
+    - bad: sync
+  async:
+    - bad: async
+---
+`;
+  const {styles, scripts, partials, content, rawYaml} = await parseYaml(yamlInput, staticDir);
+
+  // Partials
+  t.deepEqual(partials, {});
+
+  // Styles
+  t.deepEqual(styles.inline.values(), []);
+  t.deepEqual(styles.sync.values(), []);
+  t.deepEqual(styles.async.values(), []);
+
+  // Scripts
+  t.deepEqual(scripts.inline.values(), []);
+  t.deepEqual(scripts.sync.values(), []);
+  t.deepEqual(scripts.async.values(), []);
+
+  // Content
+  t.deepEqual(content, '');
+
+  // Yaml
+  t.deepEqual(rawYaml, {
+    styles: {
+      inline: [{bad: 'inline'}],
+      sync: [{bad: 'sync'}],
+      async: [{bad: 'async'}],
+    },
+    scripts: {
+      inline: [{bad: 'inline'}],
+      sync: [{bad: 'sync'}],
+      async: [{bad: 'async'}],
+    },
+  });
+});
+
+test('should handle partials with non-string entries', async (t) => {
+  const yamlInput = `---
+partials:
+  - bad: partials
+---
+`;
+  const {styles, scripts, partials, content, rawYaml} = await parseYaml(yamlInput, staticDir);
+
+  // Partials
+  t.deepEqual(partials, {});
+
+  // Styles
+  t.deepEqual(styles.inline.values(), []);
+  t.deepEqual(styles.sync.values(), []);
+  t.deepEqual(styles.async.values(), []);
+
+  // Scripts
+  t.deepEqual(scripts.inline.values(), []);
+  t.deepEqual(scripts.sync.values(), []);
+  t.deepEqual(scripts.async.values(), []);
+
+
+  // Content
+  t.deepEqual(content, '');
+
+  // Yaml
+  t.deepEqual(rawYaml, {
+    partials: [{
+      bad: 'partials',
+    }],
   });
 });
