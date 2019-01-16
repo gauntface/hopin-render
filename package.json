@@ -34,7 +34,7 @@
     "nyc": "13.1.0",
     "sinon": "7.2.2",
     "tslint": "5.12.1",
-    "typedoc": "0.14.1"
+    "typedoc": "0.14.2"
   },
   "dependencies": {
     "@hopin/logger": "2.0.0",
