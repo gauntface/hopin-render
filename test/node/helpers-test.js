@@ -1,11 +1,11 @@
 const path = require('path');
-const {test} = require('ava');
+const test = require('ava');
 
 const { createTemplateFromFile } = require('../../build');
 
 const staticDir = path.join(__dirname, '..', 'static');
 
-test('should render with helpers', async (t) => {
+test('should render with hopin header and body helpers', async (t) => {
   const template = await createTemplateFromFile(path.join(staticDir, 'helpers-example.tmpl'));
   const html = await template.render();
   t.deepEqual(html,`
@@ -43,7 +43,7 @@ document.head.appendChild(lT);
 </script>`);
 });
 
-test('should render with helpers', async (t) => {
+test('should render with array limit helper', async (t) => {
   const template = await createTemplateFromFile(path.join(staticDir, 'helpers-limit-array-example.tmpl'));
   const html = await template.render();
   t.deepEqual(html,`First Item
