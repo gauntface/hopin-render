@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const {test} = require('ava');
+const test = require('ava');
 
 import { renderBodyAssets } from '../../build/helpers/render-body-assets';
 

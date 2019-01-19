@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const {test} = require('ava');
+const test = require('ava');
 
 const { createBundle } = require('../../build/create-bundle');
 const { renderBundle } = require('../../build/render-bundle');
