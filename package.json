@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@hopin/wbt-ts-node": "0.0.17",
-    "@types/fs-extra": "5.0.4",
+    "@types/fs-extra": "5.0.5",
     "@types/sinon": "7.0.5",
     "ava": "1.2.1",
     "coveralls": "3.0.2",
