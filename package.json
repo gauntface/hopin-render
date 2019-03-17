@@ -37,7 +37,7 @@
     "typedoc": "0.14.2"
   },
   "dependencies": {
-    "@hopin/logger": "2.0.0",
+    "@hopin/logger": "2.0.1",
     "gray-matter": "^4.0.1",
     "handlebars": "^4.0.11"
   },
