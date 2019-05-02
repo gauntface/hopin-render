@@ -24,3 +24,11 @@ test('should render bundle', async (t) => {
   });
   t.deepEqual(result, '<h1>HTML</h1>\n# MD\n\nworld 1\nworld data\ntop-example\n\n<h2>HTML</h2>\n## MD\n\nworld 2\nworld data\n\n<h3>HTML</h3>\n### MD\n\nworld 3\nworld data');
 });
+
+test('should load component with args', async (t) => {
+  const rawInput = await fs.readFile(path.join(staticDir, 'load-component-example.tmpl'));
+  const bundle = await createBundle(rawInput.toString(), staticDir);
+  const result = await renderBundle(bundle);
+  console.log(result);
+  t.deepEqual(result, '# Example Partial with Args\narg');
+});

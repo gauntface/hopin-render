@@ -3,6 +3,7 @@ import {Partial} from './create-bundle';
 import { OrderedSet } from './models/ordered-set';
 import { RenderOpts } from '.';
 import {limitArray} from './helpers/limit-array';
+import { renderComponent } from './helpers/render-component';
 
 export class Template {
   content: string;
@@ -27,6 +28,10 @@ export class Template {
 
     // Common helpers
     handlebarsInstance.registerHelper('hopin_limitArray', limitArray);
+    handlebarsInstance.registerHelper('hopin_loadComponent', (...args) => {
+      console.log('???????????????????????? ', args);
+      return renderComponent(this, ...args);
+    })
 
     const handlebarsTemplate = handlebarsInstance.compile(this.content);
 
