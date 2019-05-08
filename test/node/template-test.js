@@ -3,7 +3,7 @@ const path = require('path');
 const test = require('ava');
 const sinon = require('sinon');
 
-import { createTemplate, createTemplateFromFile } from '../../build/index';
+const {createCompTmplFromString} = require('../../build/template-factory');
 
 const staticDir = path.join(__dirname, '..', 'static');
 
@@ -16,11 +16,14 @@ test.afterEach.always((t) => {
 });
 
 test('should generate template', async (t) => {
-  const rawInput = await fs.readFile(path.join(staticDir, 'bundle-example.tmpl'));
-  const template = await createTemplate(rawInput.toString(), staticDir);
+  const rawInput = await fs.readFile(path.join(staticDir, 'full-example.tmpl'));
+  const tmpl = await createCompTmplFromString(rawInput.toString(), staticDir);
   
+  t.deepEqual((tmpl.yaml)['hello'], 'world 1');
+  
+  const compBundle = tmpl.render();
   // Scripts
-  t.deepEqual(template.scripts.inline.values(), [
+  t.deepEqual(compBundle.scripts.inline.values(), [
     {
       src: `console.log('inline-1.js');`,
       type: 'nomodule',
@@ -59,41 +62,39 @@ test('should generate template', async (t) => {
     },
   ]);
 
-  t.deepEqual(template.scripts.sync.values(), [
+  
+  t.deepEqual(compBundle.scripts.sync.values(), [
     './extra-files/scripts/sync-1.js',
     './scripts/sync-2.js',
     './scripts/sync-3.js',
   ]);
 
-  t.deepEqual(template.scripts.async.values(), [
+  t.deepEqual(compBundle.scripts.async.values(), [
     './extra-files/scripts/async-1.js',
     './scripts/async-2.js',
     './scripts/async-3.js',
   ]);
 
   // Styles
-  t.deepEqual(template.styles.inline.values(), [
+  t.deepEqual(compBundle.styles.inline.values(), [
     '.inline1{}',
     '.inline2{}',
     '.inline3{}',
   ]);
 
-  t.deepEqual(template.styles.sync.values(), [
+  t.deepEqual(compBundle.styles.sync.values(), [
     './extra-files/styles/sync-1.css',
     './styles/sync-2.css',
     './styles/sync-3.css',
   ]);
 
-  t.deepEqual(template.styles.async.values(), [
+  t.deepEqual(compBundle.styles.async.values(), [
     './extra-files/styles/async-1.css',
     './styles/async-2.css',
     './styles/async-3.css',
   ]);
 
-  t.deepEqual((template.yaml)['hello'], 'world 1');
-
-  const html = await template.render();
-  t.deepEqual(html,`<h1>HTML</h1>
+  t.deepEqual(compBundle.renderedTemplate,`<h1>HTML</h1>
 # MD
 
 world 1
@@ -113,6 +114,7 @@ world 3
 `);
 });
 
+/**
 test.serial('should generate template using current working directory as path', async (t) => {
   const rawInput = await fs.readFile(path.join(staticDir, 'bundle-example.tmpl'));
   
@@ -222,3 +224,4 @@ test('should generate template using resolved path', async (t) => {
   
   t.deepEqual(html,`Basic Example`);
 });
+ */

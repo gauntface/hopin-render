@@ -1,18 +1,28 @@
-import {Template} from '../template';
+import * as handlebars from 'handlebars';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 
-export function renderComponent(t: Template, ...args: any[]): string {
+import {ComponentTemplate} from '../models/component-template';
+import { parseYaml } from '../parse-yaml';
+
+// tslint:disable-next-line:no-any
+export function renderComponent(t: ComponentTemplate, ...args: any[]): handlebars.SafeString {
     if (args.length < 1) {
-        throw new Error('hopin_loadComponent needs a file for the first argument')
+        throw new Error('hopin_loadComponent needs a file for the first argument');
     }
 
-    const componentPath = args[0]
-    if (typeof componentPath != "string") {
+    const componentPath = args[0];
+    if (typeof componentPath !== "string") {
         throw new Error(`hopin_loadComponent cannot use '${componentPath}' as a component path`);
     }
 
-    console.log(`Load component: ${componentPath}`);
-    console.log(`-------------> t`, t);
-    console.log(`-------------> args`, args);
-
-    return 'Hello Matt';
+    const fullComponentPath = path.join(t.relativePath, componentPath);
+    const componentRelPath = path.dirname(fullComponentPath);
+    const cmpBuffer = fs.readFileSync(fullComponentPath);
+    const hopinYaml = parseYaml(cmpBuffer.toString(), componentRelPath);
+    const compTemplate = new ComponentTemplate(componentRelPath, hopinYaml);
+    const bundle = compTemplate.render();
+    t.appendStyles(bundle.styles);
+    t.appendScripts(bundle.scripts);
+    return new handlebars.SafeString(bundle.renderedTemplate);
 }
