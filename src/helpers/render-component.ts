@@ -16,6 +16,8 @@ export function renderComponent(t: ComponentTemplate, ...args: any[]): handlebar
         throw new Error(`hopin_loadComponent cannot use '${componentPath}' as a component path`);
     }
 
+    console.log(`args ==============> `, args);
+
     const fullComponentPath = path.join(t.relativePath, componentPath);
     const componentRelPath = path.dirname(fullComponentPath);
     const cmpBuffer = fs.readFileSync(fullComponentPath);
