@@ -94,7 +94,7 @@ test('should generate template', async (t) => {
     './styles/async-3.css',
   ]);
 
-  t.deepEqual(compBundle.renderedTemplate,`<h1>HTML</h1>
+  t.deepEqual(compBundle.renderedTemplate, `<h1>HTML</h1>
 # MD
 
 world 1
@@ -106,12 +106,14 @@ world 1
 
 world 2
 
+world arg
 
 <h3>HTML</h3>
 ### MD
 
 world 3
-`);
+
+world arg 2`);
 });
 
 /**

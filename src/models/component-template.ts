@@ -24,10 +24,10 @@ export class ComponentTemplate extends BaseTemplate {
     return handlebarsInstance;
   }
 
-  render(): ComponentBundle {
+  render(toplevelData?: {}): ComponentBundle {
     const handlebarsInstance = this.getHandlebars();
     const handlebarsTemplate = handlebarsInstance.compile(this.content);
-    const mergedTemplateData = {yaml: this.yaml};
+    const mergedTemplateData = Object.assign({yaml: this.yaml}, toplevelData);
     const render = handlebarsTemplate(mergedTemplateData);
     return {
       renderedTemplate: render,

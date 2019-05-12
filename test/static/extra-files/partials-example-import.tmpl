@@ -29,5 +29,6 @@ partials:
 
 {{ yaml.hello }}
 {{ data.hello }}
+{{ args.hello }}
 
-{{hopin_loadComponent "./partials-example-nested-import.tmpl"}}
+{{hopin_loadComponent "./partials-example-nested-import.tmpl" hello="world arg 2"}}

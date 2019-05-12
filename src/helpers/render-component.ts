@@ -15,15 +15,18 @@ export function renderComponent(t: ComponentTemplate, ...args: any[]): handlebar
     if (typeof componentPath !== "string") {
         throw new Error(`hopin_loadComponent cannot use '${componentPath}' as a component path`);
     }
-
-    console.log(`args ==============> `, args);
+    
+    let componentArgs = {};
+    if (args.length >= 2) {
+        componentArgs = args[1].hash;
+    }
 
     const fullComponentPath = path.join(t.relativePath, componentPath);
     const componentRelPath = path.dirname(fullComponentPath);
     const cmpBuffer = fs.readFileSync(fullComponentPath);
     const hopinYaml = parseYaml(cmpBuffer.toString(), componentRelPath);
     const compTemplate = new ComponentTemplate(componentRelPath, hopinYaml);
-    const bundle = compTemplate.render();
+    const bundle = compTemplate.render({args: componentArgs});
     t.appendStyles(bundle.styles);
     t.appendScripts(bundle.scripts);
     return new handlebars.SafeString(bundle.renderedTemplate);
