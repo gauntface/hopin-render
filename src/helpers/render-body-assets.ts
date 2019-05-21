@@ -1,11 +1,11 @@
 import * as handlebars from 'handlebars';
 
-import {Bundle} from '../create-bundle';
+import { HopinTemplate } from '../models/hopin-template';
 
-export function renderBodyAssets(bundle: Bundle) {
+export function renderBodyAssets(tmpl: HopinTemplate) {
   // async styles
   const lines = [];
-  for (const inlineScript of bundle.scripts.inline.values()) {
+  for (const inlineScript of tmpl.scripts.inline.values()) {
     if (inlineScript.type === 'module') {
       lines.push(`<script type="module">${inlineScript.src.trim()}</script>`);
     } else {
@@ -15,14 +15,14 @@ export function renderBodyAssets(bundle: Bundle) {
 
   // If there are no modules, we can skip adding the 'nomodule' attribute to non-module scripts
   let hasModules = false;
-  for (const script of [...bundle.scripts.sync.values(), ...bundle.scripts.async.values()]) {
+  for (const script of [...tmpl.scripts.sync.values(), ...tmpl.scripts.async.values()]) {
     if (script.endsWith('.mjs')) {
       hasModules = true;
       break;
     }
   }
 
-  for (const syncScript of bundle.scripts.sync.values()) {
+  for (const syncScript of tmpl.scripts.sync.values()) {
     const attributes = [
       `src="${handlebars.escapeExpression(syncScript)}"`,
     ];
@@ -36,7 +36,7 @@ export function renderBodyAssets(bundle: Bundle) {
     lines.push(`<script ${attributes.join(' ')}></script>`);
   }
 
-  for (const asyncScript of bundle.scripts.async.values()) {
+  for (const asyncScript of tmpl.scripts.async.values()) {
     const attributes = [
       `src="${handlebars.escapeExpression(asyncScript)}"`,
       'async',
@@ -52,8 +52,8 @@ export function renderBodyAssets(bundle: Bundle) {
     lines.push(`<script ${attributes.join(' ')}></script>`);
   }
 
-  if (bundle.styles.async.values().length > 0) {
-    const asyncStyles = bundle.styles.async.values().map((style) => {
+  if (tmpl.styles.async.values().length > 0) {
+    const asyncStyles = tmpl.styles.async.values().map((style) => {
       return `'${style}'`;
     }).join(',');
     lines.push(`<script>

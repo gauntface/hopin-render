@@ -1,48 +1,28 @@
-import * as path from 'path';
+import * as templateFactory from './template-factory';
+import {HopinTemplate} from './models/hopin-template';
+import { ComponentTemplate } from './models/component-template';
 
-import {createBundle, createBundleFromFile, Bundle} from './create-bundle';
-import {renderBundle} from './render-bundle';
-import { StylesAssetGroup } from './models/styles-assets-groups';
-import { ScriptsAssetGroup } from './models/scripts-assets-groups';
+export function createHTMLTemplate(rawInput: string, relativePath?: string): HopinTemplate {
+  if (!relativePath) {
+      relativePath = process.cwd();
+  }
+  return templateFactory.createHopinTmplFromString(rawInput, relativePath);
+}
 
-export type RenderOpts = {
-  topLevel?: {}
-  data?: {}
-};
+export function createHTMLTemplateFromFile(filePath: string): HopinTemplate {
+  return templateFactory.createHopinTmplFromFile(filePath);
+}
 
-export async function createTemplate(rawInput: string, relativePath?: string): Promise<HopinTemplate> {
+export function createComponentTemplate(rawInput: string, relativePath?: string): ComponentTemplate {
   if (!relativePath) {
     relativePath = process.cwd();
   }
-  const bundle = await createBundle(rawInput, relativePath);
-  return new HopinTemplate(bundle);
+  return templateFactory.createCompTmplFromString(rawInput, relativePath);
 }
 
-export async function createTemplateFromFile(filePath: string): Promise<HopinTemplate> {
-  const bundle = await createBundleFromFile(filePath);
-  return new HopinTemplate(bundle);
+export function createComponentTemplateFromFile(filePath: string): ComponentTemplate {
+  return templateFactory.createCompTmplFromFile(filePath);
 }
 
-export class HopinTemplate {
-  private bundle: Bundle;
-
-  constructor(bundle: Bundle) {
-    this.bundle = bundle;
-  }
-
-  get styles(): StylesAssetGroup {
-    return this.bundle.styles;
-  }
-
-  get scripts(): ScriptsAssetGroup {
-    return this.bundle.scripts;
-  }
-
-  get yaml(): {} {
-    return this.bundle.template.yaml;
-  }
-
-  render(opts?: RenderOpts) {
-    return renderBundle(this.bundle, opts);
-  }
-}
+export {ComponentTemplate} from './models/component-template';
+export {HopinTemplate} from './models/hopin-template';

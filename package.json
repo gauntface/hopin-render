@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "ava": "npm run build && nyc ava ./test/{node,integration}/**/*.js",
+    "ava": "npm run build && nyc ava ./test/{node,integration}/**/*.js --verbose",
     "build": "gulp build",
     "docs": "typedoc ./src/**/*.ts --out ./docs/ --mode file --excludePrivate --excludeProtected --module umd --ignoreCompilerErrors",
     "lint": "tslint 'src/**/*'",
