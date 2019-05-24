@@ -25,20 +25,18 @@ export class HopinTemplate extends BaseTemplate {
     return handlebarsInstance;
   }
 
-  render(cmp?: ComponentBundle) {
+  render(cmp?: ComponentBundle, toplevelData?: {}) {
+    if (!toplevelData) {
+      toplevelData = {};
+    }
     const handlebarsInstance = this.getHandlebars();
     const handlebarsTemplate = handlebarsInstance.compile(this.content);
-    const mergedTemplateData: Data = {yaml: this.yaml};
+    let mergedTemplateData = Object.assign(toplevelData, {yaml: this.yaml});
     if (cmp) {
       this._styles.append(cmp.styles);
       this._scripts.add(cmp.scripts);
-      mergedTemplateData.content = cmp.renderedTemplate;
+      mergedTemplateData = Object.assign(mergedTemplateData, {content: cmp.renderedTemplate});
     }
     return handlebarsTemplate(mergedTemplateData);
   }
-}
-
-interface Data {
-  yaml: {};
-  content?: string;
 }
