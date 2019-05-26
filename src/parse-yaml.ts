@@ -14,6 +14,7 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): HopinYa
 
   const styles = new StylesAssetGroup();
   const scripts = new ScriptsAssetGroup();
+  const elements: string[] = [];
 
   if (rawYaml['styles']) {
     if (rawYaml['styles'].inline && Array.isArray(rawYaml['styles'].inline)) {
@@ -82,9 +83,20 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): HopinYa
     }
   }
 
+  if (rawYaml['elements']) {
+    if (Array.isArray(rawYaml['elements'])) {
+      for (const e of rawYaml['elements']) {
+        if (typeof e === 'string') {
+          elements.push(e);
+        }
+      }
+    }
+  }
+
   return {
     styles,
     scripts,
+    elements,
     content,
     rawYaml,
   };
@@ -93,6 +105,7 @@ export function parseYaml(rawYamlAndText: string, relativePath: string): HopinYa
 export interface HopinYaml {
   scripts: ScriptsAssetGroup;
   styles: StylesAssetGroup;
+  elements: string[];
   content: string;
   rawYaml: {};
 }

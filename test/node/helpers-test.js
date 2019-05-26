@@ -1,7 +1,7 @@
 const path = require('path');
 const test = require('ava');
 
-const { createHTMLTemplateFromFile } = require('../../build');
+const { createHTMLTemplateFromFile, createComponentTemplateFromFile } = require('../../build');
 
 const staticDir = path.join(__dirname, '..', 'static');
 
@@ -41,4 +41,62 @@ Second Item
 First Item
 
 `);
+});
+
+test('should load component', async (t) => {
+  const template = await createComponentTemplateFromFile(path.join(staticDir, 'helpers', 'load-component-example.tmpl'));
+  const bundle = template.render();
+  t.deepEqual(bundle.renderedTemplate,`<h1>Example HTML</h1>
+
+## Example Markdown`);
+  t.deepEqual(bundle.elements, ['h1']);
+
+  t.deepEqual(bundle.scripts.inline.values(), [
+    {
+      src: 'console.log(\'inline-1.js\');',
+      type: 'nomodule',
+    },
+    {
+      src: 'console.log(\'inline-1.mjs\');',
+      type: 'module',
+    },
+    {
+      src: 'console.log(\'inline-1.2.js\');',
+      type: 'nomodule',
+    },
+    {
+      src: 'console.log(\'inline-1.3.js\');',
+      type: 'module',
+    },
+  ]);
+  t.deepEqual(bundle.scripts.sync.values(), [
+    './sync-rel.js',
+    '/sync-abs.js',
+  ]);
+  t.deepEqual(bundle.scripts.async.values(), [
+    './async-rel.js',
+    '/async-abs.js',
+  ]);
+  
+  t.deepEqual(bundle.styles.inline.values(), [
+    '.inline1{}',
+  ]);
+  t.deepEqual(bundle.styles.sync.values(), [
+    './sync-rel.css',
+    '/sync-abs.css',
+  ]);
+  t.deepEqual(bundle.styles.async.values(), [
+    './async-rel.css',
+    '/async-abs.css',
+  ]);
+});
+
+test('should return error if load component doesnt have a file', async (t) => {
+  const tmpl = await createComponentTemplateFromFile(path.join(staticDir, 'helpers', 'load-component-no-file.tmpl'));
+  try {
+    tmpl.render();
+    throw new Error('Expected error to be thrown');
+  } catch (e) {
+    t.deepEqual(e.message, 'hopin_loadComponent needs a file for the first argument');
+  }
 });

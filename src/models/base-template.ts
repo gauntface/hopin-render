@@ -12,6 +12,7 @@ export class BaseTemplate {
   private _yaml: {};
   protected _styles: StylesAssetGroup;
   protected _scripts: ScriptsAssetGroup;
+  protected _elements: string[];
 
   constructor(relPath: string, hopinYaml: HopinYaml) {
     this.relPath = relPath;
@@ -19,6 +20,7 @@ export class BaseTemplate {
     this._yaml = hopinYaml.rawYaml;
     this._styles = hopinYaml.styles;
     this._scripts = hopinYaml.scripts;
+    this._elements = hopinYaml.elements;
   }
 
   get relativePath(): string {
