@@ -8,12 +8,7 @@ const staticDir = path.join(__dirname, '..', 'static');
 
 test('should generate example yaml', async (t) => {
   const rawInput = await fs.readFile(path.join(staticDir, 'yaml-example.tmpl'));
-  const {styles, scripts, partials, content, rawYaml} = await parseYaml(rawInput.toString(), staticDir);
-
-  // Partials
-  /* t.deepEqual(partials, {
-    './example-partial.tmpl': path.join(staticDir, 'example-partial.tmpl'),
-  });*/
+  const {styles, scripts, elements, content, rawYaml} = await parseYaml(rawInput.toString(), staticDir);
 
   // Styles
   t.deepEqual(styles.inline.values(), [
@@ -56,6 +51,8 @@ test('should generate example yaml', async (t) => {
     '/async-abs.js',
   ]);
 
+  // Elements
+  t.deepEqual(elements, ['h1']);
 
   // Content
   t.deepEqual(content, '<h1>Example HTML</h1>\n\n## Example Markdown');
@@ -114,8 +111,8 @@ test('should generate example yaml', async (t) => {
         '/async-abs.js',
       ],
     },
-    partials: [
-      './example-partial.tmpl',
+    elements: [
+      'h1',
     ],
   });
 });

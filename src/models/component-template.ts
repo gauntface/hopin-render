@@ -1,8 +1,7 @@
 import * as handlebars from 'handlebars';
 
 import { BaseTemplate } from "./base-template";
-import { HopinTemplate } from "./hopin-template";
-import {renderComponent} from '../helpers/render-component';
+import {loadComponent} from '../helpers/load-component';
 import { StylesAssetGroup } from './styles-assets-groups';
 import { ScriptsAssetGroup } from './scripts-assets-groups';
 
@@ -13,13 +12,17 @@ export class ComponentTemplate extends BaseTemplate {
   }
 
   appendScripts(s: ScriptsAssetGroup) {
-    this._scripts.add(s);
+    this._scripts.append(s);
+  }
+
+  appendElements(e: string[]) {
+    this._elements.push(...e);
   }
 
   protected getHandlebars(): typeof handlebars {
     const handlebarsInstance = super.getHandlebars();
 
-    handlebarsInstance.registerHelper('hopin_loadComponent', (...args) => renderComponent(this, ...args));
+    handlebarsInstance.registerHelper('hopin_loadComponent', (...args) => loadComponent(this, ...args));
 
     return handlebarsInstance;
   }
@@ -33,6 +36,7 @@ export class ComponentTemplate extends BaseTemplate {
       renderedTemplate: render,
       styles: this._styles,
       scripts: this._scripts,
+      elements: this._elements,
     };
   }
 }
@@ -41,4 +45,5 @@ export interface ComponentBundle {
   renderedTemplate: string;
   styles: StylesAssetGroup;
   scripts: ScriptsAssetGroup;
+  elements: string[];
 }

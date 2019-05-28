@@ -14,6 +14,9 @@
     "access": "public"
   },
   "nyc": {
+    "extension": [
+      ".ts"
+    ],
     "reporter": [
       "text",
       "html"
