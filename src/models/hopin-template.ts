@@ -37,7 +37,7 @@ export class HopinTemplate extends BaseTemplate {
     let mergedTemplateData = Object.assign(toplevelData, {yaml: this.yaml});
     if (cmp) {
       this._styles.append(cmp.styles);
-      this._scripts.add(cmp.scripts);
+      this._scripts.append(cmp.scripts);
       this._elements.push(...cmp.elements);
       mergedTemplateData = Object.assign(mergedTemplateData, {content: cmp.renderedTemplate});
     }

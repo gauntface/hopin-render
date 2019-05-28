@@ -11,7 +11,7 @@ export class ScriptsAssetGroup {
     this.async = new OrderedSet<string>();
   }
 
-  add(scripts: ScriptsAssetGroup) {
+  append(scripts: ScriptsAssetGroup) {
     this.inline.addSet(scripts.inline);
     this.sync.addSet(scripts.sync);
     this.async.addSet(scripts.async);

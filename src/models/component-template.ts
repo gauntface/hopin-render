@@ -12,7 +12,7 @@ export class ComponentTemplate extends BaseTemplate {
   }
 
   appendScripts(s: ScriptsAssetGroup) {
-    this._scripts.add(s);
+    this._scripts.append(s);
   }
 
   appendElements(e: string[]) {

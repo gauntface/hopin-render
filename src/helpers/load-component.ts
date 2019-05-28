@@ -12,13 +12,9 @@ export function loadComponent(t: ComponentTemplate, ...args: any[]): handlebars.
     }
 
     const componentPath = args[0];
-    if (typeof componentPath !== "string") {
-        throw new Error(`hopin_loadComponent cannot use '${componentPath}' as a component path`);
-    }
-    
     let componentArgs = {};
     if (args.length >= 2) {
-        componentArgs = args[1].hash;
+        componentArgs = args[args.length - 1].hash;
     }
 
     const fullComponentPath = path.join(t.relativePath, componentPath);
