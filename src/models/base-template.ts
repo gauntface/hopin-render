@@ -8,7 +8,7 @@ import { StylesAssetGroup } from "./styles-assets-groups";
 
 export class BaseTemplate {
   private relPath: string;
-  private _content: string;
+  content: string;
   private _yaml: {};
   protected _styles: StylesAssetGroup;
   protected _scripts: ScriptsAssetGroup;
@@ -16,7 +16,7 @@ export class BaseTemplate {
 
   constructor(relPath: string, hopinYaml: HopinYaml) {
     this.relPath = relPath;
-    this._content = hopinYaml.content;
+    this.content = hopinYaml.content;
     this._yaml = hopinYaml.rawYaml;
     this._styles = hopinYaml.styles;
     this._scripts = hopinYaml.scripts;
@@ -25,10 +25,6 @@ export class BaseTemplate {
 
   get relativePath(): string {
     return this.relPath;
-  }
-
-  get content(): string {
-    return this._content;
   }
 
   get yaml(): {} {
