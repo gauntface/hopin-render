@@ -22,7 +22,8 @@ export class ComponentTemplate extends BaseTemplate {
   protected getHandlebars(): typeof handlebars {
     const handlebarsInstance = super.getHandlebars();
 
-    handlebarsInstance.registerHelper('hopin_loadComponent', (...args) => loadComponent(this, ...args));
+    // tslint:disable-next-line:no-any
+    handlebarsInstance.registerHelper('hopin_loadComponent', (...args: any[]) => loadComponent(this, ...args));
 
     return handlebarsInstance;
   }
