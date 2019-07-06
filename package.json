@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "ava": "npm run build && nyc ava ./test/{node,integration}/**/*.js --verbose",
+    "ava": "nyc ava --verbose",
     "build": "gulp build",
     "docs": "typedoc ./src/**/*.ts --out ./docs/ --mode file --excludePrivate --excludeProtected --module umd --ignoreCompilerErrors",
     "lint": "tslint 'src/**/*'",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
-    "test": "npm run ava && npm run lint",
+    "test": "npm run build && npm run ava && npm run lint",
     "typescript:commonjs": "tsc -p ./tsconfigs/commonjs.json --declaration --skipLibCheck",
     "typescript:test": "tsc -p ./tsconfigs/test.json --declaration --skipLibCheck",
     "version": "echo 'TODO: ./build-docs && git add docs'"
@@ -29,7 +29,7 @@
     "@hopin/wbt-ts-node": "0.0.20",
     "@types/fs-extra": "8.0.0",
     "@types/sinon": "7.0.13",
-    "ava": "1.4.1",
+    "ava": "2.1.0",
     "coveralls": "3.0.4",
     "fs-extra": "8.1.0",
     "glob": "7.1.4",
@@ -42,7 +42,12 @@
   "dependencies": {
     "@hopin/logger": "2.0.1",
     "gray-matter": "^4.0.1",
-    "handlebars": "^4.0.11"
+    "handlebars": "^4.1.0"
+  },
+  "ava": {
+    "files": [
+      "test/node/**/*.js"
+    ]
   },
   "keywords": [
     "hopin",

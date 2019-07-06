@@ -12,15 +12,16 @@ export function loadComponent(t: ComponentTemplate, ...args: any[]): handlebars.
     }
 
     const componentPath = args[0];
-    if (!componentPath) {
-        throw new Error('hopin_loadComponent not given a path.');
-    }
+
     let componentArgs = {};
     if (args.length >= 2) {
         componentArgs = args[args.length - 1].hash;
     }
 
-    const fullComponentPath = path.join(t.relativePath, componentPath);
+    let fullComponentPath = componentPath;
+    if (!path.isAbsolute(componentPath)) {
+        fullComponentPath = path.join(t.relativePath, componentPath);
+    }
 
     const componentRelPath = path.dirname(fullComponentPath);
     const cmpBuffer = fs.readFileSync(fullComponentPath);
