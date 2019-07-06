@@ -70,5 +70,5 @@
   "license": "Apache-2.0",
   "main": "./build/index.js",
   "typings": "./build/index.d.ts",
-  "version": "4.1.1"
+  "version": "5.0.0"
 }
