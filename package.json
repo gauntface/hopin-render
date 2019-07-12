@@ -30,7 +30,7 @@
     "@types/fs-extra": "8.0.0",
     "@types/sinon": "7.0.13",
     "ava": "2.2.0",
-    "coveralls": "3.0.4",
+    "coveralls": "3.0.5",
     "fs-extra": "8.1.0",
     "glob": "7.1.4",
     "gulp": "4.0.2",
