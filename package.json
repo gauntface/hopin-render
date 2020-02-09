@@ -29,7 +29,7 @@
     "@hopin/wbt-ts-node": "0.0.20",
     "@types/fs-extra": "8.0.1",
     "@types/sinon": "7.5.1",
-    "ava": "2.4.0",
+    "ava": "3.3.0",
     "coveralls": "3.0.9",
     "fs-extra": "8.1.0",
     "glob": "7.1.6",
